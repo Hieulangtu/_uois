@@ -25,20 +25,35 @@ def UUIDColumn(name=None):
 ###########################################################################################################################
 
 class UserModel(BaseModel):
-    """Defines a lesson which is going to be planned in timetable
+    """Defines a student in the lession
     """
 
     __tablename__ = 'users'
 
     id = UUIDColumn()
+    firstname=Column(String)
+    lastname=Column(String)
+    age=Column(int)
+    email=Column(String)
+    gender=Column(String)
+
+    group_id=Column(ForeignKey('groupstudent.id'))
 
 class PlannedLessonModel(BaseModel):
     """Defines a lesson which is going to be planned in timetable
     """
 
     __tablename__ = 'plannedlessons'
-
+    
     id = UUIDColumn()
+    timeStart=Column(datetime)
+    timeEnd=Column(datetime)
+
+    student_id=Column(ForeignKey('users.id'))
+    teacher_id=Column(ForeignKey('teacher.id'))
+    event_id=Column(ForeignKey('event.id'))
+    location_id=Column(ForeignKey('location.id'))
+    
 
 
 class TeacherForLesson(BaseModel):
@@ -46,10 +61,43 @@ class TeacherForLesson(BaseModel):
     __tablename__ = 'teachersforlesson'
 
     id = UUIDColumn()
+
+    id = UUIDColumn()
+    firstname=Column(String)
+    lastname=Column(String)
+    age=Column(int)
+    email=Column(String)
+    gender=Column(String)
+
+    subject_id=
     user_id = Column(ForeignKey('users.id'), primary_key=True)
+    subject_id=Column(ForeignKey('subject.id'))
 
+class LocationModel(BaseModel):
+    __tablename__ = 'location'
 
+    id= UUIDColumn()
+    building=Column(String)
+    room=Column(String)
 
+class EventModel(BaseModel):
+    __tablename__ = 'event'
+
+    id=UUIDColumn()
+    type=Column(String)
+
+class GroupStudentModel(BaseModel):
+    __tablename__ = 'groupstudent'
+
+    id=UUIDColumn()
+    name=Column(String)  
+
+class SubjectModel(BaseModel):
+    __tablename__ = 'subject'
+
+    id=UUIDColumn()
+    name=Column(String)
+    topics=Column(list)  
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
