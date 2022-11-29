@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
 from uoishelpers.resolvers import putSingleEntityToDb
 
-from gql_empty.DBDefinitions import BaseModel
+from gql_empty.DBDefinitions import BaseModel, PlannedLessonModel
 
 ###########################################################################################################################
 #
@@ -28,7 +28,7 @@ from gql_empty.DBDefinitions import BaseModel
 
 ## Nasleduji funkce, ktere lze pouzit jako asynchronni resolvery
 
-# resolveItemById = createEntityByIdGetter(EntityModel)
-# resolveItemPage = createEntityGetter(EntityModel)
+resolvePlannedLessonPage = createEntityGetter(PlannedLessonModel)
+resolvePlannedLessonById = createEntityByIdGetter(PlannedLessonModel)
 
 # ...

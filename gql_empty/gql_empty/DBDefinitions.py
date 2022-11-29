@@ -24,6 +24,29 @@ def UUIDColumn(name=None):
 #
 ###########################################################################################################################
 
+class UserModel(BaseModel):
+    """Defines a lesson which is going to be planned in timetable
+    """
+
+    __tablename__ = 'users'
+
+    id = UUIDColumn()
+
+class PlannedLessonModel(BaseModel):
+    """Defines a lesson which is going to be planned in timetable
+    """
+
+    __tablename__ = 'plannedlessons'
+
+    id = UUIDColumn()
+
+
+class TeacherForLesson(BaseModel):
+
+    __tablename__ = 'teachersforlesson'
+
+    id = UUIDColumn()
+    user_id = Column(ForeignKey('users.id'), primary_key=True)
 
 
 

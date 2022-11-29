@@ -32,6 +32,21 @@ class UserGQLModel:
 #         result = await resolveExternalIds(AsyncSessionFromInfo(info), self.id)
 #         return result
 
+from gql_empty.gql_empty.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage 
+
+@strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
+class PlannedLessonQGLModel:
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolvePlannedLessonPage(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result    
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+
 
 ###########################################################################################################################
 #
@@ -45,6 +60,15 @@ class Query:
     @strawberryA.field(description="""Finds an workflow by their id""")
     async def say_hello(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
         result = f'Hello {id}'
+        return result
+
+
+    async def planned_lesson_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[PlannedLessonQGLModel,None]:
+        result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), id)
+        return result
+
+    async def planned_lesson_page(self,info: strawberryA.types.Info,skip: int = 0, limit: int = 10) -> List[PlannedLessonQGLModel]:
+        result = await resolvePlannedLessonPage(AsyncSessionFromInfo(info), skip, limit)
         return result
 
 ###########################################################################################################################
