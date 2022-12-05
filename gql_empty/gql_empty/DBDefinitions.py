@@ -29,49 +29,92 @@ class PlannedLessonModel(BaseModel):
     """Defines a lesson which is going to be planned in timetable
     """
 
-    __tablename__ = 'plannedlessons'
+    __tablename__ = 'planned_lessons'
     
     id = UUIDColumn()
-    timeStart=Column(datetime)
-    timeEnd=Column(datetime)
+    # subject_id=Column(ForeignKey('subject.id'))
 
+class UnavailabilityPL(BaseModel):
+    """Defines a lesson which is unavailable in timetable
+    """
+    __tablename__ = 'unavailable_planned_lessons'
 
-    group_id = Column(int)
-    teacher_id=Column(ForeignKey('teacher.id'))
-    event_id=Column(ForeignKey('event.id'))
-    location_id=Column(ForeignKey('location.id'))
-    subject_id=Column(ForeignKey('subject.id'))
+    id=UUIDColumn()
+    plannedlesson_id=Column(int,ForeignKey('planned_lessons.id'))
+    startDate=Column(DateTime)
+    endDate=Column(DateTime)
 
-association_table = Table(
-    "association_table",
-    BaseModel.metadata,
-    Column("group_id", ForeignKey("plannedlessons.group_id")),
-    Column("id", ForeignKey("groupstudent.id")),
-)
-
-    
 
 class UserModel(BaseModel):
-    """Defines a student in the lession
+    """Defines user in the lession
     """
 
     __tablename__ = 'users'
 
     id = UUIDColumn()
-    # firstname=Column(String)
-    # lastname=Column(String)
-    
     # group_id=Column(ForeignKey('groupstudent.id'))
-
     # nameGroup=relationship('GroupStudentModel', back_populates='students')
 
+
+class UserPlan(BaseModel):
+    __tablename__ = 'users_plans'
+
+    id=UUIDColumn()
+    user_id=Column(Integer,ForeignKey('users.id'))
+    plannedlesson_id=Column(Integer,ForeignKey('planned_lessons.id'))
+
+class UnavailabilityUser(BaseModel):
+    __tablename__ = 'unavailable_users'
+
+    id=UUIDColumn()
+    user_id=Column(int,ForeignKey('users.id'))
+    startDate=Column(DateTime)
+    endDate=Column(DateTime)
 
 class GroupModel(BaseModel):
     __tablename__ = 'groups'
 
     id=UUIDColumn()
-    # name=Column(String) 
-    # students=relationship('StudentModel', back_populates='nameGroup')
+
+class GroupPlan(BaseModel):
+    __tablename__ = 'groups_plans'    
+
+    id=UUIDColumn()
+    group_id=Column(Integer,ForeignKey('groups.id'))
+    plannedlession_id=Column(Integer,ForeignKey('planned_lessons.id'))
+
+class Event(BaseModel):
+    __tablename__ = 'events'
+
+    id=UUIDColumn()
+
+class EventPlan(BaseModel):
+    __tablename__ = 'events_plans'
+
+    id = UUIDColumn()
+    event_id=Column(Integer,ForeignKey('events.id'))
+    plannedlession_id=Column(Integer,ForeignKey('planned_lessons.id'))
+
+class Facility(BaseModel):
+    __tablename__ = 'facilities'
+
+    id=UUIDColumn()
+
+class FacilityPlan(BaseModel):
+    __tablename__ = 'facilities_plans'
+
+    id=UUIDColumn()
+    facility_id=Column(Integer,ForeignKey('facilities.id'))
+    plannedlession_id=Column(Integer,ForeignKey('planned_lessons.id'))
+
+class UnavailabilityFacility(BaseModel):
+    __tablename__ = 'unavailable_facilities'
+
+    id=UUIDColumn()
+    facility_id=Column(int,ForeignKey('facilities.id'))
+    startDate=Column(DateTime)
+    endDate=Column(DateTime)
+
 
 # class TeacherModel(BaseModel):
 
@@ -85,28 +128,20 @@ class GroupModel(BaseModel):
 
 #     namesubject=relationship('SubjectModel', back_populates='teachers')
 
-class SubjectModel(BaseModel):
-    __tablename__ = 'subject'
+# class LocationModel(BaseModel):
+#     __tablename__ = 'location'
 
-    id=UUIDColumn()
-    name=Column(String)
-    
-    teachers=relationship('TeacherModel', back_populates='namesubject')
-class LocationModel(BaseModel):
-    __tablename__ = 'location'
+#     id= UUIDColumn()
+#     name=Column(String)
 
-    id= UUIDColumn()
-    name=Column(String)
+# class EventModel(BaseModel):
+#     __tablename__ = 'event'
 
-class EventModel(BaseModel):
-    __tablename__ = 'event'
-
-    id=UUIDColumn()
-    type=Column(String)
+#     id=UUIDColumn()
+#     type=Column(String)
 
  
 
-  
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
