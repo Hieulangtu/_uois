@@ -32,7 +32,7 @@ class PlannedLessonModel(BaseModel):
     __tablename__ = 'planned_lessons'
     
     id = UUIDColumn()
-    # subject_id=Column(ForeignKey('subject.id'))
+    
 
 class UnavailabilityPL(BaseModel):
     """Defines a lesson which is unavailable in timetable
@@ -40,7 +40,7 @@ class UnavailabilityPL(BaseModel):
     __tablename__ = 'unavailable_planned_lessons'
 
     id=UUIDColumn()
-    plannedlesson_id=Column(int,ForeignKey('planned_lessons.id'))
+    plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
 
@@ -52,22 +52,20 @@ class UserModel(BaseModel):
     __tablename__ = 'users'
 
     id = UUIDColumn()
-    # group_id=Column(ForeignKey('groupstudent.id'))
-    # nameGroup=relationship('GroupStudentModel', back_populates='students')
-
+    
 
 class UserPlan(BaseModel):
     __tablename__ = 'users_plans'
 
     id=UUIDColumn()
-    user_id=Column(Integer,ForeignKey('users.id'))
-    plannedlesson_id=Column(Integer,ForeignKey('planned_lessons.id'))
+    user_id=Column(ForeignKey('users.id'))
+    plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
 
 class UnavailabilityUser(BaseModel):
     __tablename__ = 'unavailable_users'
 
     id=UUIDColumn()
-    user_id=Column(int,ForeignKey('users.id'))
+    user_id=Column(ForeignKey('users.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
 
@@ -80,8 +78,8 @@ class GroupPlan(BaseModel):
     __tablename__ = 'groups_plans'    
 
     id=UUIDColumn()
-    group_id=Column(Integer,ForeignKey('groups.id'))
-    plannedlession_id=Column(Integer,ForeignKey('planned_lessons.id'))
+    group_id=Column(ForeignKey('groups.id'))
+    plannedlession_id=Column(ForeignKey('planned_lessons.id'))
 
 class Event(BaseModel):
     __tablename__ = 'events'
@@ -92,8 +90,8 @@ class EventPlan(BaseModel):
     __tablename__ = 'events_plans'
 
     id = UUIDColumn()
-    event_id=Column(Integer,ForeignKey('events.id'))
-    plannedlession_id=Column(Integer,ForeignKey('planned_lessons.id'))
+    event_id=Column(ForeignKey('events.id'))
+    plannedlession_id=Column(ForeignKey('planned_lessons.id'))
 
 class Facility(BaseModel):
     __tablename__ = 'facilities'
@@ -104,42 +102,19 @@ class FacilityPlan(BaseModel):
     __tablename__ = 'facilities_plans'
 
     id=UUIDColumn()
-    facility_id=Column(Integer,ForeignKey('facilities.id'))
-    plannedlession_id=Column(Integer,ForeignKey('planned_lessons.id'))
+    facility_id=Column(ForeignKey('facilities.id'))
+    plannedlession_id=Column(ForeignKey('planned_lessons.id'))
 
 class UnavailabilityFacility(BaseModel):
     __tablename__ = 'unavailable_facilities'
 
     id=UUIDColumn()
-    facility_id=Column(int,ForeignKey('facilities.id'))
+    facility_id=Column(ForeignKey('facilities.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
 
 
-# class TeacherModel(BaseModel):
-
-#     __tablename__ = 'teacher'
-
-#     id = UUIDColumn()
-#     firstname=Column(String)
-#     lastname=Column(String)
-
-#     subject_id=Column(ForeignKey('subject.id'))
-
-#     namesubject=relationship('SubjectModel', back_populates='teachers')
-
-# class LocationModel(BaseModel):
-#     __tablename__ = 'location'
-
-#     id= UUIDColumn()
-#     name=Column(String)
-
-# class EventModel(BaseModel):
-#     __tablename__ = 'event'
-
-#     id=UUIDColumn()
-#     type=Column(String)
-
+###########################################################
  
 
 

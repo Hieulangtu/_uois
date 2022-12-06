@@ -292,6 +292,7 @@ services:
       interval: 60s
       timeout: 10s
       retries: 5
+    
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
 
   pgadmin:
