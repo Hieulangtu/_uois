@@ -32,7 +32,7 @@ class UserGQLModel:
 #         result = await resolveExternalIds(AsyncSessionFromInfo(info), self.id)
 #         return result
 
-from gql_empty.gql_empty.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage 
+#  from gql_empty.gql_empty.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
 class PlannedLessonQGLModel:
