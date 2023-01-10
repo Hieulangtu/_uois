@@ -32,7 +32,38 @@ class UserGQLModel:
 #         result = await resolveExternalIds(AsyncSessionFromInfo(info), self.id)
 #         return result
 
-from gql_empty.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson
+@strawberryA.federation.type(extend=True, keys=["id"])
+class GroupGQLModel:
+    
+    id: strawberryA.ID = strawberryA.federation.field(external=True)
+
+    @classmethod
+    def resolve_reference(cls, id: strawberryA.ID):
+        return GroupGQLModel(id=id)
+
+@strawberryA.federation.type(extend=True, keys=["id"])
+class FacilityGQLModel:
+    
+    id: strawberryA.ID = strawberryA.federation.field(external=True)
+
+    @classmethod
+    def resolve_reference(cls, id: strawberryA.ID):
+        return FacilityGQLModel(id=id) 
+@strawberryA.federation.type(extend=True, keys=["id"])
+class EventGQLModel:
+    
+    id: strawberryA.ID = strawberryA.federation.field(external=True)
+
+    @classmethod
+    def resolve_reference(cls, id: strawberryA.ID):
+        return EventGQLModel(id=id) 
+
+
+
+
+from gql_empty.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson, resolveGroupLinksForPlannedLesson, resolveFacilityLinksForPlannedLesson,resolveEventLinksForPlannedLesson
+                                     
+                                    
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
 class PlannedLessonGQLModel:
@@ -41,7 +72,8 @@ class PlannedLessonGQLModel:
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition # little hack :)
-        return result    
+        return result 
+          
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
@@ -54,15 +86,21 @@ class PlannedLessonGQLModel:
 
     @strawberryA.field(description="""primary key""")
     async def groups(self, info: strawberryA.types.Info) -> List["GroupGQLModel"]: 
-        return self.id
+        result = await resolveGroupLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
+        result2 = [GroupGQLModel(id=item.user_id) for item in result]
+        return result2
 
     @strawberryA.field(description="""primary key""")
     async def facilities(self, info: strawberryA.types.Info) -> List["FacilityGQLModel"]: 
-        return self.id
+        result = await resolveFacilityLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
+        result2 = [FacilityGQLModel(id=item.user_id) for item in result]
+        return result2
 
     @strawberryA.field(description="""primary key""")
     async def events(self, info: strawberryA.types.Info) -> List["EventGQLModel"]: 
-        return self.id
+        result = await resolveEventLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
+        result2 = [EventGQLModel(id=item.user_id) for item in result]
+        return result2
 
 ###########################################################################################################################
 #
