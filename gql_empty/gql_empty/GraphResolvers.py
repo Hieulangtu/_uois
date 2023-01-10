@@ -10,6 +10,8 @@ from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, create
 from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_empty.DBDefinitions import BaseModel, PlannedLessonModel, UserPlan, GroupPlan, EventPlan, FacilityPlan
+from gql_empty.DBDefinitions import UnavailabilityPL, UnavailabilityUser, UnavailabilityFacility
+from gql_empty.DBDefinitions import UserModel, GroupModel, Event, Facility
 
 ###########################################################################################################################
 #
@@ -31,9 +33,26 @@ from gql_empty.DBDefinitions import BaseModel, PlannedLessonModel, UserPlan, Gro
 resolvePlannedLessonPage = createEntityGetter(PlannedLessonModel) #fuction. return a list
 resolvePlannedLessonById = createEntityByIdGetter(PlannedLessonModel) #single row . 
 
-# ...
-
+# intermediate data resolver
 resolveUserLinksForPlannedLesson = create1NGetter(UserPlan,foreignKeyName='plannedlesson_id') #
 resolveGroupLinksForPlannedLesson = create1NGetter(GroupPlan,foreignKeyName='plannedlesson_id')
 resolveFacilityLinksForPlannedLesson = create1NGetter(EventPlan,foreignKeyName='plannedlesson_id')
 resolveEventLinksForPlannedLesson = create1NGetter(FacilityPlan,foreignKeyName='plannedlesson_id')
+
+#unavailable Plan lesson resolver
+resolveUnavailabilityPLById = createEntityByIdGetter(UnavailabilityPL)
+resolveUnavailabilityPLAll = createEntityGetter(UnavailabilityPL)
+resolverUpdateUnavailabilityPL = createUpdateResolver(UnavailabilityPL)
+resolveInsertUnavailabilityPL = createInsertResolver(UnavailabilityPL)
+
+#unavailable User resolver
+resolveUnavailabilityUserById = createEntityByIdGetter(UnavailabilityUser)
+resolveUnavailabilityUserAll = createEntityGetter(UnavailabilityUser)
+resolverUpdateUnavailabilityUser = createUpdateResolver(UnavailabilityUser)
+resolveInsertUnavailabilityUser = createInsertResolver(UnavailabilityUser)
+
+#unavailable Facility resolver
+resolveUnavailabilityFacilityById = createEntityByIdGetter(UnavailabilityFacility)
+resolveUnavailabilityFacilityAll = createEntityGetter(UnavailabilityFacility)
+resolverUpdateUnavailabilityFacility = createUpdateResolver(UnavailabilityFacility)
+resolveInsertUnavailabilityFacility = createInsertResolver(UnavailabilityFacility)
