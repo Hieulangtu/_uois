@@ -32,21 +32,37 @@ class UserGQLModel:
 #         result = await resolveExternalIds(AsyncSessionFromInfo(info), self.id)
 #         return result
 
-#  from gql_empty.gql_empty.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage 
+from gql_empty.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
-class PlannedLessonQGLModel:
+class PlannedLessonGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolvePlannedLessonPage(AsyncSessionFromInfo(info), id)
+        result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition # little hack :)
         return result    
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""primary key""")
+    async def users(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
+        result = await resolveUserLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
+        result2 = [UserGQLModel(id=item.user_id) for item in result]
+        return result2
 
+    @strawberryA.field(description="""primary key""")
+    async def groups(self, info: strawberryA.types.Info) -> List["GroupGQLModel"]: 
+        return self.id
+
+    @strawberryA.field(description="""primary key""")
+    async def facilities(self, info: strawberryA.types.Info) -> List["FacilityGQLModel"]: 
+        return self.id
+
+    @strawberryA.field(description="""primary key""")
+    async def events(self, info: strawberryA.types.Info) -> List["EventGQLModel"]: 
+        return self.id
 
 ###########################################################################################################################
 #
@@ -63,11 +79,11 @@ class Query:
         return result
 
 
-    async def planned_lesson_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[PlannedLessonQGLModel,None]:
+    async def planned_lesson_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[PlannedLessonGQLModel,None]:
         result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), id)
         return result
 
-    async def planned_lesson_page(self,info: strawberryA.types.Info,skip: int = 0, limit: int = 10) -> List[PlannedLessonQGLModel]:
+    async def planned_lesson_page(self,info: strawberryA.types.Info,skip: int = 0, limit: int = 10) -> List[PlannedLessonGQLModel]:
         result = await resolvePlannedLessonPage(AsyncSessionFromInfo(info), skip, limit)
         return result
 
