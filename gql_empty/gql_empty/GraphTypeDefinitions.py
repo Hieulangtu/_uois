@@ -25,6 +25,9 @@ class UserGQLModel:
     @classmethod
     def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id) # jestlize rozsirujete, musi byt tento vyraz
+    
+    async def planItems()->typing.List['PlannedLessonGQLModel']:
+        pass
 
 #     zde je rozsireni o dalsi resolvery
 #     @strawberryA.field(description="""Inner id""")
