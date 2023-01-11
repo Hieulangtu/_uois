@@ -4,7 +4,19 @@ from unittest import result
 import strawberry as strawberryA
 import uuid
 
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context['asyncSessionMaker']
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
+
+
 def AsyncSessionFromInfo(info):
+    print('obsolete function used AsyncSessionFromInfo, use withInfo context manager instead')
     return info.context['session']
 
 ###########################################################################################################################
@@ -17,6 +29,9 @@ def AsyncSessionFromInfo(info):
 #
 # priklad rozsireni UserGQLModel
 #
+import datetime
+
+from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForUser_
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
     
@@ -26,8 +41,11 @@ class UserGQLModel:
     def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id) # jestlize rozsirujete, musi byt tento vyraz
     
-    async def planItems()->typing.List['PlannedLessonGQLModel']:
-        pass
+    @strawberryA.field(description="""PlannedLessons""")
+    async def plans(self, info: strawberryA.types.Info)->typing.List['PlannedLessonGQLModel']:
+        async with withInfo(info) as session:
+            result = await resolvePlannedLessonsForUser_(session,  self.id)
+            return result
 
 #     zde je rozsireni o dalsi resolvery
 #     @strawberryA.field(description="""Inner id""")
