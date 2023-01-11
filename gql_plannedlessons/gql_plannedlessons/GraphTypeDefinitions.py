@@ -64,7 +64,7 @@ class EventGQLModel:
 
 
 
-from gql_empty.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson, resolveGroupLinksForPlannedLesson, resolveFacilityLinksForPlannedLesson,resolveEventLinksForPlannedLesson
+from gql_plannedlessons.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson, resolveGroupLinksForPlannedLesson, resolveFacilityLinksForPlannedLesson,resolveEventLinksForPlannedLesson
                                      
                                     
 

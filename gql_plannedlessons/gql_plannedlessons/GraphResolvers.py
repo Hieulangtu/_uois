@@ -9,9 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
 from uoishelpers.resolvers import putSingleEntityToDb
 
-from gql_empty.DBDefinitions import BaseModel, PlannedLessonModel, UserPlan, GroupPlan, EventPlan, FacilityPlan
-from gql_empty.DBDefinitions import UnavailabilityPL, UnavailabilityUser, UnavailabilityFacility
-from gql_empty.DBDefinitions import UserModel, GroupModel, Event, Facility
+from gql_plannedlessons.DBDefinitions import BaseModel, PlannedLessonModel, UserPlan, GroupPlan, EventPlan, FacilityPlan
+from gql_plannedlessons.DBDefinitions import UnavailabilityPL, UnavailabilityUser, UnavailabilityFacility
+from gql_plannedlessons.DBDefinitions import UserModel, GroupModel, Event, Facility
 
 ###########################################################################################################################
 #
