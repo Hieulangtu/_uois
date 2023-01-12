@@ -31,6 +31,8 @@ def AsyncSessionFromInfo(info):
 #
 import datetime
 
+
+#user GQL
 from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForUser_
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
@@ -53,6 +55,8 @@ class UserGQLModel:
 #         result = await resolveExternalIds(AsyncSessionFromInfo(info), self.id)
 #         return result
 
+#group GQL
+from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForGroup_
 @strawberryA.federation.type(extend=True, keys=["id"])
 class GroupGQLModel:
     
@@ -62,6 +66,16 @@ class GroupGQLModel:
     def resolve_reference(cls, id: strawberryA.ID):
         return GroupGQLModel(id=id)
 
+    @strawberryA.field(description="""PlannedLessons""")
+    async def plans(self, info: strawberryA.types.Info)->typing.List['PlannedLessonGQLModel']:
+        async with withInfo(info) as session:
+            result = await resolvePlannedLessonsForGroup_(session,  self.id)
+            return result
+
+
+
+#facility GQL
+from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForFacility_
 @strawberryA.federation.type(extend=True, keys=["id"])
 class FacilityGQLModel:
     
@@ -70,6 +84,16 @@ class FacilityGQLModel:
     @classmethod
     def resolve_reference(cls, id: strawberryA.ID):
         return FacilityGQLModel(id=id) 
+
+    @strawberryA.field(description="""PlannedLessons""")
+    async def plans(self, info: strawberryA.types.Info)->typing.List['PlannedLessonGQLModel']:
+        async with withInfo(info) as session:
+            result = await resolvePlannedLessonsForFacility_(session,  self.id)
+            return result
+
+
+#event GQL
+from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForEvent_
 @strawberryA.federation.type(extend=True, keys=["id"])
 class EventGQLModel:
     
@@ -79,13 +103,21 @@ class EventGQLModel:
     def resolve_reference(cls, id: strawberryA.ID):
         return EventGQLModel(id=id) 
 
+    @strawberryA.field(description="""PlannedLessons""")
+    async def plans(self, info: strawberryA.types.Info)->typing.List['PlannedLessonGQLModel']:
+        async with withInfo(info) as session:
+            result = await resolvePlannedLessonsForEvent_(session,  self.id)
+            return result
 
 
+#unavilablePlan GQL
 
-from gql_plannedlessons.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson, resolveGroupLinksForPlannedLesson, resolveFacilityLinksForPlannedLesson,resolveEventLinksForPlannedLesson
-                                     
-                                    
+#unavailableUser GQL
 
+#unavailableFacility GQL
+
+#plannedLessons GQL
+from gql_plannedlessons.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson, resolveGroupLinksForPlannedLesson, resolveFacilityLinksForPlannedLesson,resolveEventLinksForPlannedLesson                                                               
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
 class PlannedLessonGQLModel:
 
@@ -129,6 +161,8 @@ class PlannedLessonGQLModel:
 #
 ###########################################################################################################################
 
+
+#Query
 @strawberryA.type(description="""Type for query root""")
 class Query:
    
@@ -137,11 +171,13 @@ class Query:
         result = f'Hello {id}'
         return result
 
-
+    
+    @strawberryA.field(description="""Finds a leson by id""")
     async def planned_lesson_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[PlannedLessonGQLModel,None]:
         result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), id)
         return result
-
+    
+    @strawberryA.field(description="""Finds all lessons""")
     async def planned_lesson_page(self,info: strawberryA.types.Info,skip: int = 0, limit: int = 10) -> List[PlannedLessonGQLModel]:
         result = await resolvePlannedLessonPage(AsyncSessionFromInfo(info), skip, limit)
         return result

@@ -31,16 +31,19 @@ from gql_plannedlessons.DBDefinitions import UserModel, GroupModel, Event, Facil
 
 ## Nasleduji funkce, ktere lze pouzit jako asynchronni resolvery
 
+#plannedlesson resolver
 resolvePlannedLessonPage = createEntityGetter(PlannedLessonModel) #fuction. return a list
 resolvePlannedLessonById = createEntityByIdGetter(PlannedLessonModel) #single row . 
+resolveUpdatePlannedLesson = createUpdateResolver(PlannedLessonModel)
+resolveInsertPlannedLesson = createInsertResolver(PlannedLessonModel)
 
-# intermediate data resolver
+
 resolveUserLinksForPlannedLesson = create1NGetter(UserPlan,foreignKeyName='plannedlesson_id') 
 resolveGroupLinksForPlannedLesson = create1NGetter(GroupPlan,foreignKeyName='plannedlesson_id')
 resolveFacilityLinksForPlannedLesson = create1NGetter(EventPlan,foreignKeyName='plannedlesson_id')
 resolveEventLinksForPlannedLesson = create1NGetter(FacilityPlan,foreignKeyName='plannedlesson_id')
 
-# intermediate data resolver2
+# intermediate data resolver
 async def resolvePlannedLessonsForUser_(session, id):
     statement = select(PlannedLessonModel).join(UserPlan)
     statement = statement.filter(UserPlan.user_id == id)
@@ -77,17 +80,17 @@ async def resolvePlannedLessonsForEvent_(session, id):
 #unavailable Plan lesson resolver
 resolveUnavailabilityPLById = createEntityByIdGetter(UnavailabilityPL)
 resolveUnavailabilityPLAll = createEntityGetter(UnavailabilityPL)
-resolverUpdateUnavailabilityPL = createUpdateResolver(UnavailabilityPL)
+resolveUpdateUnavailabilityPL = createUpdateResolver(UnavailabilityPL)
 resolveInsertUnavailabilityPL = createInsertResolver(UnavailabilityPL)
 
 #unavailable User resolver
 resolveUnavailabilityUserById = createEntityByIdGetter(UnavailabilityUser)
 resolveUnavailabilityUserAll = createEntityGetter(UnavailabilityUser)
-resolverUpdateUnavailabilityUser = createUpdateResolver(UnavailabilityUser)
+resolveUpdateUnavailabilityUser = createUpdateResolver(UnavailabilityUser)
 resolveInsertUnavailabilityUser = createInsertResolver(UnavailabilityUser)
 
 #unavailable Facility resolver
 resolveUnavailabilityFacilityById = createEntityByIdGetter(UnavailabilityFacility)
 resolveUnavailabilityFacilityAll = createEntityGetter(UnavailabilityFacility)
-resolverUpdateUnavailabilityFacility = createUpdateResolver(UnavailabilityFacility)
+resolveUpdateUnavailabilityFacility = createUpdateResolver(UnavailabilityFacility)
 resolveInsertUnavailabilityFacility = createInsertResolver(UnavailabilityFacility)
