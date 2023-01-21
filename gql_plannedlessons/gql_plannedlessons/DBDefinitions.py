@@ -32,9 +32,9 @@ class PlannedLessonModel(BaseModel):
     __tablename__ = 'planned_lessons'
     
     id = UUIDColumn()
-    
-
-class UnavailabilityPL(BaseModel):
+    event_id=Column(ForeignKey('events.id'))
+  
+class UnavailablePLModel(BaseModel):
     """Defines a lesson which is unavailable in timetable
     """
     __tablename__ = 'unavailable_planned_lessons'
@@ -54,14 +54,14 @@ class UserModel(BaseModel):
     id = UUIDColumn()
     
 
-class UserPlan(BaseModel):
+class UserPlanModel(BaseModel):
     __tablename__ = 'users_plans'
 
     id=UUIDColumn()
     user_id=Column(ForeignKey('users.id'))
     plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
 
-class UnavailabilityUser(BaseModel):
+class UnavailableUserModel(BaseModel):
     __tablename__ = 'unavailable_users'
 
     id=UUIDColumn()
@@ -74,38 +74,38 @@ class GroupModel(BaseModel):
 
     id=UUIDColumn()
 
-class GroupPlan(BaseModel):
+class GroupPlanModel(BaseModel):
     __tablename__ = 'groups_plans'    
 
     id=UUIDColumn()
     group_id=Column(ForeignKey('groups.id'))
     plannedlession_id=Column(ForeignKey('planned_lessons.id'))
 
-class Event(BaseModel):
+class EventModel(BaseModel):
     __tablename__ = 'events'
 
     id=UUIDColumn()
 
-class EventPlan(BaseModel):
-    __tablename__ = 'events_plans'
+# class EventPlanModel(BaseModel):
+#     __tablename__ = 'events_plans'
 
-    id = UUIDColumn()
-    event_id=Column(ForeignKey('events.id'))
-    plannedlession_id=Column(ForeignKey('planned_lessons.id'))
+#     id = UUIDColumn()
+#     event_id=Column(ForeignKey('events.id'))
+#     plannedlession_id=Column(ForeignKey('planned_lessons.id'))
 
-class Facility(BaseModel):
+class FacilityModel(BaseModel):
     __tablename__ = 'facilities'
 
     id=UUIDColumn()
 
-class FacilityPlan(BaseModel):
+class FacilityPlanModel(BaseModel):
     __tablename__ = 'facilities_plans'
 
     id=UUIDColumn()
     facility_id=Column(ForeignKey('facilities.id'))
     plannedlession_id=Column(ForeignKey('planned_lessons.id'))
 
-class UnavailabilityFacility(BaseModel):
+class UnavailableFacilityModel(BaseModel):
     __tablename__ = 'unavailable_facilities'
 
     id=UUIDColumn()

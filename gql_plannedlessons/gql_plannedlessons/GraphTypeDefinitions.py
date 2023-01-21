@@ -150,11 +150,11 @@ class PlannedLessonGQLModel:
         result2 = [FacilityGQLModel(id=item.user_id) for item in result]
         return result2
 
-    @strawberryA.field(description="""primary key""")
-    async def events(self, info: strawberryA.types.Info) -> List["EventGQLModel"]: 
-        result = await resolveEventLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
-        result2 = [EventGQLModel(id=item.user_id) for item in result]
-        return result2
+    # @strawberryA.field(description="""primary key""")
+    # async def events(self, info: strawberryA.types.Info) -> List["EventGQLModel"]: 
+    #     result = await resolveEventLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
+    #     result2 = [EventGQLModel(id=item.user_id) for item in result]
+    #     return result2
 
 ###########################################################################################################################
 #
