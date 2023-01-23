@@ -38,6 +38,7 @@ resolveUpdatePlannedLesson = createUpdateResolver(PlannedLessonModel)
 resolveInsertPlannedLesson = createInsertResolver(PlannedLessonModel)
 
 resolveEventsForPlannedLesson = create1NGetter(EventModel,foreignKeyName='plannedlesson_id')
+
 resolveUserLinksForPlannedLesson = create1NGetter(UserPlanModel,foreignKeyName='plannedlesson_id') 
 resolveGroupLinksForPlannedLesson = create1NGetter(GroupPlanModel,foreignKeyName='plannedlesson_id')
 resolveFacilityLinksForPlannedLesson = create1NGetter(FacilityPlanModel,foreignKeyName='plannedlesson_id')
@@ -72,7 +73,7 @@ resolverPlanLinksForGroup = create1NGetter(GroupPlanModel,foreignKeyName='group_
 
 async def resolvePlannedLessonsForGroup_(session, id):
     statement = select(PlannedLessonModel).join(GroupPlanModel)
-    statement = statement.filter(GroupPlanModel.user_id == id)
+    statement = statement.filter(GroupPlanModel.group_id == id)
     
     response = await session.execute(statement)
     result = response.scalars()
@@ -87,7 +88,7 @@ resolverPlanLinksForFacility = create1NGetter(FacilityPlanModel,foreignKeyName='
 
 async def resolvePlannedLessonsForFacility_(session, id):
     statement = select(PlannedLessonModel).join(FacilityPlanModel)
-    statement = statement.filter(FacilityPlanModel.user_id == id)
+    statement = statement.filter(FacilityPlanModel.facility_id == id)
     
     response = await session.execute(statement)
     result = response.scalars()
@@ -97,7 +98,7 @@ async def resolvePlannedLessonsForFacility_(session, id):
 resolveEventById = createEntityByIdGetter(EventModel)
 resolveEventAll = createEntityGetter(EventModel)
 
-resolverPlansForFacility = create1NGetter(PlannedLessonModel,foreignKeyName='event_id')
+resolverPlansForEvent = create1NGetter(PlannedLessonModel,foreignKeyName='event_id')
 
 # intermediate data resolver
 
