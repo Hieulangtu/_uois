@@ -55,20 +55,108 @@ def types2():
 
 import asyncio
 async def predefineAllDataStructures(asyncSessionMaker):
-    #
-    # asyncio.gather(
-    #   putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types1), # prvni
-    #   putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types2)  # druha ...
-    # )
-    #
-    #
+    
+    await asyncio.gather(
+      putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types1), # prvni
+      putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types2)  # druha ...
+    )
+    
+    
     return
 
+# async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):
+#     """Zabezpeci prvotni inicicalizaci typu externích ids v databazi
+#        DBModel zprostredkovava tabulku, je to sqlalchemy model
+#        structureFunction() dava data, ktera maji byt ulozena
+#     """
+#     # ocekavane typy 
+#     externalIdTypes = structureFunction()
+    
+#     #dotaz do databaze
+#     stmt = select(DBModel)
+#     async with asyncSessionMaker() as session:
+#         dbSet = await session.execute(stmt)
+#         dbRows = list(dbSet.scalars())
+    
+#     #extrakce dat z vysledku dotazu
+#     #vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
+#     dbRowsDicts = [
+#         {'name': row.name, 'id': f'{row.id}'} for row in dbRows
+#         ]
+
+#     print(structureFunction, 'external id types found in database')
+#     print(dbRowsDicts)
+
+#     # vytahneme si vektor (list) id, ten pouzijeme pro operator in nize
+#     idsInDatabase = [row['id'] for row in dbRowsDicts]
+
+#     # zjistime, ktera id nejsou v databazi
+#     unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+#     print(structureFunction, 'external id types not found in database')
+#     print(unsavedRows)
+
+#     # pro vsechna neulozena id vytvorime entity
+#     rowsToAdd = [DBModel(**row) for row in unsavedRows]
+#     print(rowsToAdd)
+#     print(len(rowsToAdd))
+
+#     # a vytvorene entity jednou operaci vlozime do databaze
+#     async with asyncSessionMaker() as session:
+#         async with session.begin():
+#             session.add_all(rowsToAdd)
+#         await session.commit()
+
+#     # jeste jednou se dotazeme do databaze
+#     stmt = select(DBModel)
+#     async with asyncSessionMaker() as session:
+#         dbSet = await session.execute(stmt)
+#         dbRows = dbSet.scalars()
+    
+#     #extrakce dat z vysledku dotazu
+#     dbRowsDicts = [
+#         {'name': row.name, 'id': f'{row.id}'} for row in dbRows
+#         ]
+
+#     print(structureFunction, 'found in database')
+#     print(dbRowsDicts)
+
+#     # znovu id, ktera jsou uz ulozena
+#     idsInDatabase = [row['id'] for row in dbRowsDicts]
+
+#     # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
+#     unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+
+#     # ted by melo byt pole prazdne
+#     print(structureFunction, 'not found in database')
+#     print(unsavedRows)
+#     if not(len(unsavedRows) == 0):
+#         print('SOMETHING is REALLY WRONG')
+
+#     print(structureFunction, 'Defined in database')
+#     # nyni vsechny entity mame v pameti a v databazi synchronizovane
+#     print(structureFunction())
+#     pass
+
 async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):
-    """Zabezpeci prvotni inicicalizaci typu externích ids v databazi
-       DBModel zprostredkovava tabulku, je to sqlalchemy model
-       structureFunction() dava data, ktera maji byt ulozena
+    """Zabezpeci prvotni inicicalizaci zaznamu v databazi
+       DBModel zprostredkovava tabulku,
+       structureFunction() dava data, ktera maji byt ulozena, predpoklada se list of dicts, pricemz dict obsahuje elementarni datove typy
     """
+
+    tableName = DBModel.__tablename__
+    # column names
+    cols = [col.name for col in DBModel.metadata.tables[tableName].columns]
+
+    def mapToCols(item):
+        """z item vybere jen atributy, ktere jsou v DBModel, zbytek je ignorovan"""
+        result = {}
+        for col in cols:
+            value = item.get(col, None)
+            if value is None:
+                continue
+            result[col] = value
+        return result
+
     # ocekavane typy 
     externalIdTypes = structureFunction()
     
@@ -79,32 +167,42 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
         dbRows = list(dbSet.scalars())
     
     #extrakce dat z vysledku dotazu
-    #vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
-    dbRowsDicts = [
-        {'name': row.name, 'id': f'{row.id}'} for row in dbRows
-        ]
-
-    print(structureFunction, 'external id types found in database')
-    print(dbRowsDicts)
-
-    # vytahneme si vektor (list) id, ten pouzijeme pro operator in nize
-    idsInDatabase = [row['id'] for row in dbRowsDicts]
+    #vezmeme si jen atribut id, id je typu uuid, tak jej zkovertujeme na string
+    idsInDatabase = [f'{row.id}' for row in dbRows]
 
     # zjistime, ktera id nejsou v databazi
-    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
-    print(structureFunction, 'external id types not found in database')
-    print(unsavedRows)
+    unsavedRows = list(filter(lambda row: not(f'{row["id"]}' in idsInDatabase), externalIdTypes))
 
-    # pro vsechna neulozena id vytvorime entity
-    rowsToAdd = [DBModel(**row) for row in unsavedRows]
-    print(rowsToAdd)
-    print(len(rowsToAdd))
+    async def saveChunk(rows):
+        # pro vsechna neulozena id vytvorime entity
+        # omezime se jen na atributy, ktere jsou definovane v modelu
+        mappedUnsavedRows = list(map(mapToCols, rows))
+        rowsToAdd = [DBModel(**row) for row in mappedUnsavedRows]
 
-    # a vytvorene entity jednou operaci vlozime do databaze
-    async with asyncSessionMaker() as session:
-        async with session.begin():
-            session.add_all(rowsToAdd)
-        await session.commit()
+        # a vytvorene entity jednou operaci vlozime do databaze
+        async with asyncSessionMaker() as session:
+            async with session.begin():
+                session.add_all(rowsToAdd)
+            await session.commit()
+
+    if len(unsavedRows) > 0:
+        # je co ukladat
+        if '_chunk' in unsavedRows[0]:
+            # existuje informace o rozfazovani ukladani do tabulky
+            nextPhase =  [*unsavedRows]
+            while len(nextPhase) > 0:
+                #zjistime nejmensi cislo poradi ukladani 
+                chunkNumber = min(map(lambda item: item['_chunk'], nextPhase))
+                #filtrujeme radky, ktere maji toto cislo
+                toSave = list(filter(lambda item: item['_chunk'] == chunkNumber, nextPhase))
+                #ostatni nechame na pozdeji
+                nextPhase = list(filter(lambda item: item['_chunk'] != chunkNumber, nextPhase))
+                #ulozime vybrane
+                await saveChunk(toSave)
+        else:
+            # vsechny zaznamy mohou byt ulozeny soucasne
+            await saveChunk(unsavedRows)
+
 
     # jeste jednou se dotazeme do databaze
     stmt = select(DBModel)
@@ -113,26 +211,17 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
         dbRows = dbSet.scalars()
     
     #extrakce dat z vysledku dotazu
-    dbRowsDicts = [
-        {'name': row.name, 'id': f'{row.id}'} for row in dbRows
-        ]
-
-    print(structureFunction, 'found in database')
-    print(dbRowsDicts)
-
-    # znovu id, ktera jsou uz ulozena
-    idsInDatabase = [row['id'] for row in dbRowsDicts]
+    idsInDatabase = [f'{row.id}' for row in dbRows]
 
     # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
-    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+    unsavedRows = list(filter(lambda row: not(f'{row["id"]}' in idsInDatabase), externalIdTypes))
 
     # ted by melo byt pole prazdne
-    print(structureFunction, 'not found in database')
-    print(unsavedRows)
     if not(len(unsavedRows) == 0):
         print('SOMETHING is REALLY WRONG')
 
-    print(structureFunction, 'Defined in database')
+    #print(structureFunction(), 'On the input')
+    #print(dbRowsDicts, 'Defined in database')
     # nyni vsechny entity mame v pameti a v databazi synchronizovane
-    print(structureFunction())
+    #print(structureFunction())
     pass

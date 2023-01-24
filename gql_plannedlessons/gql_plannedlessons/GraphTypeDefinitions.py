@@ -162,17 +162,17 @@ class PlannedLessonGQLModel:
         return result2
 
     @strawberryA.field(description="""""")
-    async def unavailablePlans(self, info: strawberryA.types.Info)->typing.List['UnavilablePlanGQLModel']:
+    async def unavailablePlans(self, info: strawberryA.types.Info)->typing.List['UnavailablePlanGQLModel']:
         result = await resolveUnavailablePLsForPlannedLesson(AsyncSessionFromInfo(info), self.id)
         return result
     
     @strawberryA.field(description="""""")
-    async def unavailableUsers(self, info: strawberryA.types.Info)->typing.List['UnavilableUserGQLModel']:
+    async def unavailableUsers(self, info: strawberryA.types.Info)->typing.List['UnavailableUserGQLModel']:
         result = await resolveUnavailableUsersForPlannedLesson(AsyncSessionFromInfo(info), self.id)
         return result
     
     @strawberryA.field(description="""""")
-    async def unavailableFacilities(self, info: strawberryA.types.Info)->typing.List['UnavilableFacilityGQLModel']:
+    async def unavailableFacilities(self, info: strawberryA.types.Info)->typing.List['UnavailableFacilityGQLModel']:
         result = await resolveUnavailableFacilitiesForPlannedLesson(AsyncSessionFromInfo(info), self.id)
         return result
 
@@ -348,6 +348,14 @@ class Query:
         result = await resolveUnavailableUserAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
+#call method in DBfeed
+
+
+    @strawberryA.field(description="""Finds all unavailable facilities""")
+    async def load_demo_data(self,info: strawberryA.types.Info) -> str:
+        asyncSessionMaker = info.context['asyncSessionMaker']
+        result = await resolveUnavailableUserAll(asyncSessionMaker)
+        return 'ok'
 ###########################################################################################################################
 #
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
