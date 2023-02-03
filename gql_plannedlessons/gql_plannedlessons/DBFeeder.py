@@ -1,9 +1,12 @@
 from doctest import master
 from functools import cache
-from gql_plannedlessons.DBDefinitions import BaseModel
+from gql_plannedlessons.DBDefinitions import BaseModel,PlannedLessonModel
+from gql_plannedlessons.DBDefinitions import UserPlanModel, GroupPlanModel,FacilityPlanModel
+from gql_plannedlessons.DBDefinitions import UnavailablePLModel, UnavailableFacilityModel, UnavailableUserModel
 
 import random
 import itertools
+import datetime
 from functools import cache
 
 
@@ -27,7 +30,48 @@ def singleCall(asyncFunc):
 ###########################################################################################################################
 
 @cache
-def types1():
+def determinePlans():
+    data = [
+        {'id': 'a6b68fca-7874-419f-8366-007d6348c365'},
+    ]
+    return data
+
+@cache
+def determineUnavailablePlans():
+    data = [
+        {'id': '3c4ea8df-ef85-411f-9b31-1466e24b783a', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': 'aff5f481-8316-431d-a8ab-7964010855be', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': 'bad2b1bd-f46c-4853-824b-286c8a559d39', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': 'd60f27be-94d0-4054-9b30-b21f94cce233', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': '6470d145-2d70-4314-ab77-c56906c390e1', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+    ]
+    return data
+
+@cache
+def determineUnavailableUsers():
+    data = [
+        {'id': 'aef959ec-88b9-4d34-ac18-a204944d8fbd', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': '878a749a-0e56-4520-ad32-3a0df939a32a', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': 'fec7906c-2941-4ffc-8bc2-9fc96d9cb971', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': '1f29aee7-7131-417d-98ee-77db9aab7c34', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': '2c375f31-7593-4cf3-b742-a1ccc5a7bb90', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+    ]
+    return data
+
+@cache
+def determineUnavailableFacilities():
+    data = [
+        {'id': '66d42be1-4c1f-4db0-94b0-8623dffe2e01', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': '71bdc937-9aed-4f09-a6fa-b64ed95140ab', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': 'ffeced99-598e-4701-8e65-1ee1b63d6ffd', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': '306848ac-b50d-48cc-8b1f-7a992cd6546f', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+        {'id': '57da7bcb-22d0-4e3a-b1e0-65951030a02f', 'startDate': datetime.datetime(), 'endDate':datetime.datetime()},
+    ]
+    return data
+
+
+@cache
+def d():
     # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
     data = [
         {'id': '282e67ec-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeA'},
@@ -35,18 +79,6 @@ def types1():
         {'id': '282e7002-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeC'},
     ]
     return data
-
-@cache
-def types2():
-    # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
-    data = [
-        {'id': '4b883614-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeX'},
-        {'id': '4b8838a8-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeY'},
-        {'id': '4b883a38-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeZ'},
-    ]
-    return data
-
-
 ###########################################################################################################################
 #
 # zde definujte sve funkce, ktere naplni random data do vasich tabulek
@@ -57,8 +89,10 @@ import asyncio
 async def predefineAllDataStructures(asyncSessionMaker):
     
     await asyncio.gather(
-      putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types1), # prvni
-      putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types2)  # druha ...
+      putPredefinedStructuresIntoTable(asyncSessionMaker, PlannedLessonModel, determinePlans), # prvni
+      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailablePLModel, determineUnavailablePlans),  # druha ...
+      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailableUserModel, determineUnavailableUsers),
+      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailableFacilityModel, determineUnavailableFacilities)
     )
     
     

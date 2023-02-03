@@ -4,6 +4,7 @@ from unittest import result
 import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
+from gql_plannedlessons.DBFeeder import predefineAllDataStructures
 
 @asynccontextmanager
 async def withInfo(info):
@@ -351,10 +352,10 @@ class Query:
 #call method in DBfeed
 
 
-    @strawberryA.field(description="""Finds all unavailable facilities""")
+    @strawberryA.field(description="""""")
     async def load_demo_data(self,info: strawberryA.types.Info) -> str:
         asyncSessionMaker = info.context['asyncSessionMaker']
-        result = await resolveUnavailableUserAll(asyncSessionMaker)
+        result = await predefineAllDataStructures(asyncSessionMaker)
         return 'ok'
 ###########################################################################################################################
 #
