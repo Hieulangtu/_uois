@@ -25,6 +25,7 @@ def UUIDColumn(name=None):
 ###########################################################################################################################
 
 
+
 class PlannedLessonModel(BaseModel):
     """Defines a lesson which is going to be planned in timetable
     """
