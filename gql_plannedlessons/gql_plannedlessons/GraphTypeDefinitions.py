@@ -36,6 +36,7 @@ import datetime
 
 #user GQL
 from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForUser_
+from gql_plannedlessons.GraphResolvers import resolveUnavailablesForUser 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
     
@@ -54,6 +55,12 @@ class UserGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""""")
+    async def unavailableUsers(self, info: strawberryA.types.Info)->typing.List['UnavailableUserGQLModel']:
+        result = await resolveUnavailablesForUser(AsyncSessionFromInfo(info), self.id)
+        return result
+    
 
 #     zde je rozsireni o dalsi resolvery
 #     @strawberryA.field(description="""Inner id""")
@@ -86,6 +93,7 @@ class GroupGQLModel:
 
 #facility GQL
 from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForFacility_
+from gql_plannedlessons.GraphResolvers import resolveUnavailablesForFacility
 @strawberryA.federation.type(extend=True, keys=["id"])
 class FacilityGQLModel:
     
@@ -104,6 +112,12 @@ class FacilityGQLModel:
         async with withInfo(info) as session:
             result = await resolvePlannedLessonsForFacility_(session,  self.id)
             return result
+    
+    @strawberryA.field(description="""""")
+    async def unavailableFacilities(self, info: strawberryA.types.Info)->typing.List['UnavailableFacilityGQLModel']:
+        result = await resolveUnavailablesForFacility(AsyncSessionFromInfo(info), self.id)
+        return result
+
 
 
 #event GQL
@@ -130,7 +144,7 @@ class EventGQLModel:
 
 #plannedLessons GQL
 from gql_plannedlessons.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson, resolveGroupLinksForPlannedLesson, resolveFacilityLinksForPlannedLesson
-from gql_plannedlessons.GraphResolvers import resolveUnavailablePLsForPlannedLesson, resolveUnavailableUsersForPlannedLesson, resolveUnavailableFacilitiesForPlannedLesson
+from gql_plannedlessons.GraphResolvers import resolveUnavailablePLsForPlannedLesson
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
 class PlannedLessonGQLModel:
 
@@ -167,16 +181,6 @@ class PlannedLessonGQLModel:
         result = await resolveUnavailablePLsForPlannedLesson(AsyncSessionFromInfo(info), self.id)
         return result
     
-    @strawberryA.field(description="""""")
-    async def unavailableUsers(self, info: strawberryA.types.Info)->typing.List['UnavailableUserGQLModel']:
-        result = await resolveUnavailableUsersForPlannedLesson(AsyncSessionFromInfo(info), self.id)
-        return result
-    
-    @strawberryA.field(description="""""")
-    async def unavailableFacilities(self, info: strawberryA.types.Info)->typing.List['UnavailableFacilityGQLModel']:
-        result = await resolveUnavailableFacilitiesForPlannedLesson(AsyncSessionFromInfo(info), self.id)
-        return result
-
 
 #unavilablePlan GQL
 from gql_plannedlessons.GraphResolvers import resolveUnavailablePLById 

@@ -37,17 +37,19 @@ resolvePlannedLessonById = createEntityByIdGetter(PlannedLessonModel) #single ro
 resolveUpdatePlannedLesson = createUpdateResolver(PlannedLessonModel)
 resolveInsertPlannedLesson = createInsertResolver(PlannedLessonModel)
 
-resolveEventsForPlannedLesson = create1NGetter(EventModel,foreignKeyName='plannedlesson_id')
+# resolveEventsForPlannedLesson = create1NGetter(EventModel,foreignKeyName='plannedlesson_id')
 
 resolveUserLinksForPlannedLesson = create1NGetter(UserPlanModel,foreignKeyName='plannedlesson_id') 
 resolveGroupLinksForPlannedLesson = create1NGetter(GroupPlanModel,foreignKeyName='plannedlesson_id')
 resolveFacilityLinksForPlannedLesson = create1NGetter(FacilityPlanModel,foreignKeyName='plannedlesson_id')
 
 resolveUnavailablePLsForPlannedLesson = create1NGetter(UnavailablePLModel,foreignKeyName='plannedlesson_id') 
-resolveUnavailableUsersForPlannedLesson = create1NGetter(UnavailableUserModel,foreignKeyName='plannedlesson_id') 
-resolveUnavailableFacilitiesForPlannedLesson = create1NGetter(UnavailableFacilityModel,foreignKeyName='plannedlesson_id') 
+# resolveUnavailablesForUser = create1NGetter(UnavailableUserModel,foreignKeyName='user_id') 
+# resolveUnavailablesForFacility = create1NGetter(UnavailableFacilityModel,foreignKeyName='facility_id') 
 
-
+# resolveUnavailableUsersForPlannedLesson = create1NGetter(UnavailableUserModel,foreignKeyName='plannedlesson_id') 
+# resolveUnavailableFacilitiesForPlannedLesson = create1NGetter(UnavailableFacilityModel,foreignKeyName='plannedlesson_id') 
+  
 
 #user resolver
 resolveUserById = createEntityByIdGetter(UserModel)
@@ -64,6 +66,8 @@ async def resolvePlannedLessonsForUser_(session, id):
     response = await session.execute(statement)
     result = response.scalars()
     return result
+
+resolveUnavailablesForUser = create1NGetter(UnavailableUserModel,foreignKeyName='user_id') 
 
 #group resolver
 resolveGroupById = createEntityByIdGetter(GroupModel)
@@ -93,6 +97,8 @@ async def resolvePlannedLessonsForFacility_(session, id):
     response = await session.execute(statement)
     result = response.scalars()
     return result
+
+resolveUnavailablesForFacility = create1NGetter(UnavailableFacilityModel,foreignKeyName='facility_id') 
 
 #event resolver
 resolveEventById = createEntityByIdGetter(EventModel)
