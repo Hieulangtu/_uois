@@ -111,15 +111,22 @@ resolverPlansForEvent = create1NGetter(PlannedLessonModel,foreignKeyName='event_
 #userPlan resolver
 resolveUserPlanById = createEntityByIdGetter(UserPlanModel)
 resolveUserPlanAll = createEntityGetter(UserPlanModel)
+resolveUpdateUserPlan = createUpdateResolver(UserPlanModel)
+resolveInsertUserPlan = createInsertResolver(UserPlanModel)
 
 #groupPlan resolver
-resolveGroupById = createEntityByIdGetter(GroupModel)
-resolveGroupAll = createEntityGetter(GroupModel)
+resolveGroupPlanById = createEntityByIdGetter(GroupPlanModel)
+resolveGroupPlanAll = createEntityGetter(GroupPlanModel)
+resolveUpdateGroupPlan = createUpdateResolver(GroupPlanModel)
+resolveInsertGroupPlan = createInsertResolver(GroupPlanModel)
 
 #facilityPlan resolver
-resolveFacilityById = createEntityByIdGetter(FacilityModel)
-resolveFacilityAll = createEntityGetter(FacilityModel)
+resolveFacilityPlanById = createEntityByIdGetter(FacilityPlanModel)
+resolveFacilityPlanAll = createEntityGetter(FacilityPlanModel)
+resolveUpdateFacilityPlan = createUpdateResolver(FacilityPlanModel)
+resolveInsertFacilityPlan = createInsertResolver(FacilityPlanModel)
 
+# Unavailable resolver
 
 #unavailable Plan lesson resolver
 resolveUnavailablePLById = createEntityByIdGetter(UnavailablePLModel)

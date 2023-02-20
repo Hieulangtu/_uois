@@ -158,7 +158,7 @@ class PlannedLessonGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""return user""")
     async def users(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
         result = await resolveUserLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
         result2 = [UserGQLModel(id=item.user_id) for item in result]
@@ -198,7 +198,7 @@ class UnavailablePlanGQLModel:
 
 
     @strawberryA.field(description="""Plan that unavailable""")
-    async def plan(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
+    async def plannedLesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
         result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), self.plannedlesson_id)
         return result
 
@@ -206,6 +206,7 @@ class UnavailablePlanGQLModel:
 
 #unavailableUser GQL
 from gql_plannedlessons.GraphResolvers import resolveUnavailableUserById 
+from gql_plannedlessons.GraphResolvers import resolveUserById 
 @strawberryA.federation.type(keys=["id"],description="""Unavailable users""")
 class UnavailableUserGQLModel:
     @classmethod
@@ -219,14 +220,15 @@ class UnavailableUserGQLModel:
         return self.id
 
 
-    @strawberryA.field(description="""Plan that unavailable""")
-    async def plan(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
-        result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), self.plannedlesson_id)
+    @strawberryA.field(description="""Information User that unavailable""")
+    async def user(self, info: strawberryA.types.Info) -> Union[UserGQLModel,None]:
+        result = await resolveUserById (AsyncSessionFromInfo(info), self.user_id)
         return result
 
 
 #unavailableFacility GQL 
 from gql_plannedlessons.GraphResolvers import resolveUnavailableFacilityById 
+from gql_plannedlessons.GraphResolvers import resolveFacilityById
 @strawberryA.federation.type(keys=["id"],description="""Unavailable facilities""")
 class UnavailableFacilityGQLModel:
     @classmethod
@@ -240,9 +242,84 @@ class UnavailableFacilityGQLModel:
         return self.id
 
 
-    @strawberryA.field(description="""Plan that unavailable""")
-    async def plan(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
+    @strawberryA.field(description="""Infor Facility that unavailable""")
+    async def facility(self, info: strawberryA.types.Info) -> Union[FacilityGQLModel,None]:
+        result = await resolveFacilityById(AsyncSessionFromInfo(info), self.facility_id)
+        return result
+
+#userPlan GQL
+from gql_plannedlessons.GraphResolvers import resolveUserPlanById
+@strawberryA.federation.type(keys=["id"],description="""Intermediate User and Plan""")
+class UserPlanGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveUserPlanById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
+    @strawberryA.field(description="""Primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+
+    @strawberryA.field(description="""Planned Lesson""")
+    async def plannedLesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
         result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), self.plannedlesson_id)
+        return result
+
+    @strawberryA.field(description="""User""")
+    async def user(self, info: strawberryA.types.Info) -> Union[UserGQLModel,None]:
+        result = await resolveUserById(AsyncSessionFromInfo(info), self.user_id)
+        return result
+
+#facilityPlan GQL
+from gql_plannedlessons.GraphResolvers import resolveFacilityPlanById
+@strawberryA.federation.type(keys=["id"],description="""Intermediate Facility and Plan""")
+class FacilityPlanGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveFacilityPlanById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
+    @strawberryA.field(description="""Primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+
+    @strawberryA.field(description="""Planned Lesson""")
+    async def plannedLesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
+        result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), self.plannedlesson_id)
+        return result
+
+    @strawberryA.field(description="""Facility""")
+    async def facility(self, info: strawberryA.types.Info) -> Union[FacilityGQLModel,None]:
+        result = await resolveFacilityById(AsyncSessionFromInfo(info), self.facility_id)
+        return result
+
+#groupPlan GQL
+from gql_plannedlessons.GraphResolvers import resolveGroupPlanById
+@strawberryA.federation.type(keys=["id"],description="""Intermediate Group and Plan""")
+class GroupPlanGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveGroupPlanById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
+    @strawberryA.field(description="""Primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+
+    @strawberryA.field(description="""Planned Lesson""")
+    async def plannedLesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
+        result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), self.plannedlesson_id)
+        return result
+
+    @strawberryA.field(description="""Group""")
+    async def group(self, info: strawberryA.types.Info) -> Union[GroupGQLModel,None]:
+        result = await resolveGroupById(AsyncSessionFromInfo(info), self.group_id)
         return result
 
 
@@ -256,7 +333,7 @@ class UnavailableFacilityGQLModel:
 from gql_plannedlessons.GraphResolvers import resolveUserById, resolveUserAll, resolveGroupById, resolveGroupAll,resolveFacilityById, resolveFacilityAll
 from gql_plannedlessons.GraphResolvers import resolveEventById,resolveEventAll
 from gql_plannedlessons.GraphResolvers import  resolveUnavailablePLAll, resolveUnavailableUserAll, resolveUnavailableFacilityAll
-
+from gql_plannedlessons.GraphResolvers import resolveUserPlanAll,resolveGroupPlanAll,resolveFacilityPlanAll
 @strawberryA.type(description="""Type for query root""")
 class Query:
    
@@ -320,6 +397,40 @@ class Query:
         result = await resolveEventAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
+    #group-plan
+    @strawberryA.field(description="""Finds a group-plan by id""")
+    async def group_plan_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[GroupPlanGQLModel,None]:
+        result = await resolveGroupPlanById(AsyncSessionFromInfo(info), id)
+        return result
+    
+    @strawberryA.field(description="""Finds all GroupPlans""")
+    async def group_plan_page(self,info: strawberryA.types.Info,skip: int = 0, limit: int = 10) -> List[GroupPlanGQLModel]:
+        result = await resolveGroupPlanAll(AsyncSessionFromInfo(info), skip, limit)
+        return result
+
+    #user-plan
+    @strawberryA.field(description="""Finds a UserPlan by id""")
+    async def user_plan_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[UserPlanGQLModel,None]:
+        result = await resolveUserPlanById(AsyncSessionFromInfo(info), id)
+        return result
+    
+    @strawberryA.field(description="""Finds all UserPlans""")
+    async def user_plan_page(self,info: strawberryA.types.Info,skip: int = 0, limit: int = 10) -> List[UserPlanGQLModel]:
+        result = await resolveUserPlanAll(AsyncSessionFromInfo(info), skip, limit)
+        return result
+
+    #facility-plan
+    @strawberryA.field(description="""Finds a FacilityPlan by id""")
+    async def facility_plan_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[FacilityPlanGQLModel,None]:
+        result = await resolveFacilityPlanById(AsyncSessionFromInfo(info), id)
+        return result
+    
+    @strawberryA.field(description="""Finds all FacilityPlans""")
+    async def facility_plan_page(self,info: strawberryA.types.Info,skip: int = 0, limit: int = 10) -> List[FacilityPlanGQLModel]:
+        result = await resolveFacilityPlanAll(AsyncSessionFromInfo(info), skip, limit)
+        return result
+
+
     #unavailable planned lesson
     @strawberryA.field(description="""Finds an unavailable planned lesson by id""")
     async def unavailable_plan_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[UnavailablePlanGQLModel,None]:
@@ -350,7 +461,7 @@ class Query:
     
     @strawberryA.field(description="""Finds all unavailable facilities""")
     async def unavailable_facility_page(self,info: strawberryA.types.Info,skip: int = 0, limit: int = 10) -> List[UnavailableFacilityGQLModel]:
-        result = await resolveUnavailableUserAll(AsyncSessionFromInfo(info), skip, limit)
+        result = await resolveUnavailableFacilityAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
 #call method in DBfeed
