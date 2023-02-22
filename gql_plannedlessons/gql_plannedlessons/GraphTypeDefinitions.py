@@ -36,7 +36,7 @@ import datetime
 
 #user GQL
 from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForUser_
-from gql_plannedlessons.GraphResolvers import resolveUnavailablesForUser 
+from gql_plannedlessons.GraphResolvers import resolveUnavailablesForUser, resolverPlanLinksForUser 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
     
@@ -61,6 +61,11 @@ class UserGQLModel:
         result = await resolveUnavailablesForUser(AsyncSessionFromInfo(info), self.id)
         return result
     
+    @strawberryA.field(description="""""")
+    async def userPlans(self, info: strawberryA.types.Info)->typing.List['UserPlanGQLModel']:
+        result = await resolverPlanLinksForUser(AsyncSessionFromInfo(info), self.id)
+        return result
+    
 
 #     zde je rozsireni o dalsi resolvery
 #     @strawberryA.field(description="""Inner id""")
@@ -69,7 +74,7 @@ class UserGQLModel:
 #         return result
 
 #group GQL
-from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForGroup_
+from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForGroup_, resolverPlanLinksForGroup
 @strawberryA.federation.type(extend=True, keys=["id"])
 class GroupGQLModel:
     
@@ -89,11 +94,17 @@ class GroupGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""""")
+    async def groupPlans(self, info: strawberryA.types.Info)->typing.List['GroupPlanGQLModel']:
+        result = await resolverPlanLinksForGroup(AsyncSessionFromInfo(info), self.id)
+        return result
+    
+
     
 
 #facility GQL
 from gql_plannedlessons.GraphResolvers import resolvePlannedLessonsForFacility_
-from gql_plannedlessons.GraphResolvers import resolveUnavailablesForFacility
+from gql_plannedlessons.GraphResolvers import resolveUnavailablesForFacility, resolverPlanLinksForFacility
 @strawberryA.federation.type(extend=True, keys=["id"])
 class FacilityGQLModel:
     
@@ -116,6 +127,11 @@ class FacilityGQLModel:
     @strawberryA.field(description="""""")
     async def unavailableFacilities(self, info: strawberryA.types.Info)->typing.List['UnavailableFacilityGQLModel']:
         result = await resolveUnavailablesForFacility(AsyncSessionFromInfo(info), self.id)
+        return result
+
+    @strawberryA.field(description="""""")
+    async def facilityPlans(self, info: strawberryA.types.Info)->typing.List['FacilityPlanGQLModel']:
+        result = await resolverPlanLinksForFacility(AsyncSessionFromInfo(info), self.id)
         return result
 
 
@@ -177,9 +193,32 @@ class PlannedLessonGQLModel:
         return result2
 
     @strawberryA.field(description="""""")
+    async def event(self, info: strawberryA.types.Info)->Union[EventGQLModel,None]:
+        result = await resolveEventById(AsyncSessionFromInfo(info), self.event_id)
+        return result
+
+    
+    @strawberryA.field(description="""""")
+    async def groupPlans(self, info: strawberryA.types.Info)->typing.List['GroupPlanGQLModel']:
+        result = await resolveGroupLinksForPlannedLesson(AsyncSessionFromInfo(info), self.id)
+        return result
+
+    @strawberryA.field(description="""""")
+    async def userPlans(self, info: strawberryA.types.Info)->typing.List['UserPlanGQLModel']:
+        result = await resolveUserLinksForPlannedLesson(AsyncSessionFromInfo(info), self.id)
+        return result
+
+    @strawberryA.field(description="""""")
+    async def facilityPlans(self, info: strawberryA.types.Info)->typing.List['FacilityPlanGQLModel']:
+        result = await resolveFacilityLinksForPlannedLesson(AsyncSessionFromInfo(info), self.id)
+        return result
+
+    @strawberryA.field(description="""""")
     async def unavailablePlans(self, info: strawberryA.types.Info)->typing.List['UnavailablePlanGQLModel']:
         result = await resolveUnavailablePLsForPlannedLesson(AsyncSessionFromInfo(info), self.id)
         return result
+
+    
     
 
 #unavilablePlan GQL
