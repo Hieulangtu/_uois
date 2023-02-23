@@ -34,6 +34,7 @@ class PlannedLessonModel(BaseModel):
     
     id = UUIDColumn()
     event_id=Column(ForeignKey('events.id'))
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
   
 class UnavailablePLModel(BaseModel):
     """Defines a lesson which is unavailable in timetable
@@ -44,6 +45,7 @@ class UnavailablePLModel(BaseModel):
     plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 
 class UserModel(BaseModel):
@@ -61,6 +63,7 @@ class UserPlanModel(BaseModel):
     id=UUIDColumn()
     user_id=Column(ForeignKey('users.id'))
     plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class UnavailableUserModel(BaseModel):
     __tablename__ = 'unavailable_users'
@@ -69,6 +72,7 @@ class UnavailableUserModel(BaseModel):
     user_id=Column(ForeignKey('users.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class GroupModel(BaseModel):
     __tablename__ = 'groups'
@@ -81,6 +85,7 @@ class GroupPlanModel(BaseModel):
     id=UUIDColumn()
     group_id=Column(ForeignKey('groups.id'))
     plannedlession_id=Column(ForeignKey('planned_lessons.id'))
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class EventModel(BaseModel):
     __tablename__ = 'events'
@@ -105,6 +110,7 @@ class FacilityPlanModel(BaseModel):
     id=UUIDColumn()
     facility_id=Column(ForeignKey('facilities.id'))
     plannedlession_id=Column(ForeignKey('planned_lessons.id'))
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class UnavailableFacilityModel(BaseModel):
     __tablename__ = 'unavailable_facilities'
@@ -113,6 +119,7 @@ class UnavailableFacilityModel(BaseModel):
     facility_id=Column(ForeignKey('facilities.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 
 ###########################################################

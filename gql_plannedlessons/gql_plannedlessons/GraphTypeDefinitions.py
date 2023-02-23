@@ -4,6 +4,8 @@ from unittest import result
 import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
+from typing import Optional
+
 from gql_plannedlessons.DBFeeder import predefineAllDataStructures
 
 @asynccontextmanager
@@ -156,11 +158,13 @@ class EventGQLModel:
         result = await resolverPlansForEvent(AsyncSessionFromInfo(info), self.id)
         return result
         
-
+################################################################################################################
 
 #plannedLessons GQL
 from gql_plannedlessons.GraphResolvers import resolvePlannedLessonById, resolvePlannedLessonPage ,resolveUserLinksForPlannedLesson, resolveGroupLinksForPlannedLesson, resolveFacilityLinksForPlannedLesson
 from gql_plannedlessons.GraphResolvers import resolveUnavailablePLsForPlannedLesson
+from gql_plannedlessons.GraphResolvers import resolveUpdatePlannedLesson
+from gql_plannedlessons.GraphResolvers import resolveInsertUserPlan, resolveInsertGroupPlan, resolveInsertFacilityPlan, resolveInsertUnavailablePL
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
 class PlannedLessonGQLModel:
 
@@ -218,11 +222,88 @@ class PlannedLessonGQLModel:
         result = await resolveUnavailablePLsForPlannedLesson(AsyncSessionFromInfo(info), self.id)
         return result
 
+    @strawberryA.field(description="""Returns the planned lesson editor""")
+    async def editor(self, info: strawberryA.types.Info) -> Union['PlannedLessonEditorGQLModel', None]:
+        return self
     
-    
+#plannedlesson update GQL 
+@strawberryA.input
+class PlannedLessonUpdateGQLModel:
+    lastchange: datetime.datetime  # razitko
+    event_id: Optional[strawberryA.ID] = None
 
-#unavilablePlan GQL
+
+#PlannedLesson Edit GQL   
+@strawberryA.federation.type( keys=["id"], description="""Entity representing an editable planned lesson""")
+class PlannedLessonEditorGQLModel:
+
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await PlannedLessonGQLModel.resolve_reference(info, id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def plannedLesson(self, info: strawberryA.types.Info) -> PlannedLessonGQLModel:
+        result = await PlannedLessonGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Updates the planned lesson data""")
+    async def update(self, info: strawberryA.types.Info, data: PlannedLessonUpdateGQLModel) -> "PlannedLessonEditorGQLModel":
+        lastchange = data.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdatePlannedLesson(session, id=self.id, data=data)
+            if lastchange == data.lastchange:
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = PlannedLessonEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+    
+    @strawberryA.field(description="""Create new group plan - create group for lesson """)
+    async def add_group_plan(self, info: strawberryA.types.Info, group_id: uuid.UUID) -> 'GroupPlanGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveInsertGroupPlan(session, None, extraAttributes={ 'group_id': group_id, 'plannedlession_id': self.id})
+            return result
+    
+    @strawberryA.field(description="""Create new user plan - create user for lesson """)
+    async def add_user_plan(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserPlanGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveInsertUserPlan(session, None, extraAttributes={ 'user_id': user_id, 'plannedlession_id': self.id})
+            return result
+
+    @strawberryA.field(description="""Create new facility plan - create facility for lesson """)
+    async def add_facility_plan(self, info: strawberryA.types.Info, facility_id: uuid.UUID) -> 'FacilityPlanGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveInsertFacilityPlan(session, None, extraAttributes={ 'facility_id': facility_id, 'plannedlession_id': self.id})
+            return result
+    
+    @strawberryA.field(description="""Create new unavailable plan """)
+    async def add_unavailable_plan(self, info: strawberryA.types.Info, startDate: datetime.date, endDate: datetime.date) -> 'UnavailablePlanGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveInsertUnavailablePL(session, None, extraAttributes={ 'startDate': startDate, 'endDate':endDate, 'plannedlession_id': self.id})
+            return result
+
+################################################################################################################
+
+#unavailablePlan GQL
 from gql_plannedlessons.GraphResolvers import resolveUnavailablePLById 
+from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailablePL
 @strawberryA.federation.type(keys=["id"],description="""Unavailable pLan""")
 class UnavailablePlanGQLModel:
     @classmethod
@@ -240,12 +321,68 @@ class UnavailablePlanGQLModel:
     async def plannedLesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
         result = await resolvePlannedLessonById(AsyncSessionFromInfo(info), self.plannedlesson_id)
         return result
+    
+    @strawberryA.field(description="""Returns the Unavailable plan editor""")
+    async def editor(self, info: strawberryA.types.Info) -> Union['UnavailablePlanEditorGQLModel', None]:
+        return self
 
 
+#unavailable planned lesson update GQL 
+@strawberryA.input
+class UnavailablePlanUpdateGQLModel:
+    lastchange: datetime.datetime  # razitko
+    startDate: Optional[datetime.datetime] = None
+    endDate: Optional[datetime.datetime] = None
+
+
+#unavailable planned lesson GQL   
+@strawberryA.federation.type( keys=["id"], description="""Entity representing an editable unavailable planned lesson""")
+class UnavailablePlanEditorGQLModel:
+
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await UnavailablePlanGQLModel.resolve_reference(info, id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def unavailablePlan(self, info: strawberryA.types.Info) -> UnavailablePlanGQLModel:
+        result = await UnavailablePlanGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Updates the unavailable planned lesson data""")
+    async def update(self, info: strawberryA.types.Info, data: UnavailablePlanUpdateGQLModel) -> "UnavailablePlanEditorGQLModel":
+        lastchange = data.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdateUnavailablePL(session, id=self.id, data=data)
+            if lastchange == data.lastchange:
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = UnavailablePlanEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+
+################################################################################################################
 
 #unavailableUser GQL
 from gql_plannedlessons.GraphResolvers import resolveUnavailableUserById 
 from gql_plannedlessons.GraphResolvers import resolveUserById 
+from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableUser
 @strawberryA.federation.type(keys=["id"],description="""Unavailable users""")
 class UnavailableUserGQLModel:
     @classmethod
@@ -263,11 +400,67 @@ class UnavailableUserGQLModel:
     async def user(self, info: strawberryA.types.Info) -> Union[UserGQLModel,None]:
         result = await resolveUserById (AsyncSessionFromInfo(info), self.user_id)
         return result
+    
+    @strawberryA.field(description="""Returns the Unavailable User editor""")
+    async def editor(self, info: strawberryA.types.Info) -> Union['UnavailableUserEditorGQLModel', None]:
+        return self
 
+#unavailable user update GQL 
+@strawberryA.input
+class UnavailableUserUpdateGQLModel:
+    lastchange: datetime.datetime  # razitko
+    startDate: Optional[datetime.datetime] = None
+    endDate: Optional[datetime.datetime] = None
+
+
+#unavailable User Edit GQL   
+@strawberryA.federation.type( keys=["id"], description="""Entity representing an editable unavailable user""")
+class UnavailableUserEditorGQLModel:
+
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await UnavailableUserGQLModel.resolve_reference(info, id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def unavailableUser(self, info: strawberryA.types.Info) -> UnavailableUserGQLModel:
+        result = await UnavailableUserGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Updates the unavailable User data""")
+    async def update(self, info: strawberryA.types.Info, data: UnavailableUserUpdateGQLModel) -> "UnavailableUserEditorGQLModel":
+        lastchange = data.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdateUnavailableUser(session, id=self.id, data=data)
+            if lastchange == data.lastchange:
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = UnavailableUserEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+
+################################################################################################################
 
 #unavailableFacility GQL 
 from gql_plannedlessons.GraphResolvers import resolveUnavailableFacilityById 
 from gql_plannedlessons.GraphResolvers import resolveFacilityById
+from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableFacility
 @strawberryA.federation.type(keys=["id"],description="""Unavailable facilities""")
 class UnavailableFacilityGQLModel:
     @classmethod
@@ -286,8 +479,64 @@ class UnavailableFacilityGQLModel:
         result = await resolveFacilityById(AsyncSessionFromInfo(info), self.facility_id)
         return result
 
+    @strawberryA.field(description="""Returns the Unavailable Facility editor""")
+    async def editor(self, info: strawberryA.types.Info) -> Union['UnavailableFacilityEditorGQLModel', None]:
+        return self
+
+#unavailable Facility update GQL 
+@strawberryA.input
+class UnavailableFacilityUpdateGQLModel:
+    lastchange: datetime.datetime  # razitko
+    startDate: Optional[datetime.datetime] = None
+    endDate: Optional[datetime.datetime] = None
+
+#unavailable Facility Edit GQL   
+@strawberryA.federation.type( keys=["id"], description="""Entity representing an editable unavailable Facility""")
+class UnavailableFacilityEditorGQLModel:
+
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await UnavailableFacilityGQLModel.resolve_reference(info, id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def unavailableFacility(self, info: strawberryA.types.Info) -> UnavailableFacilityGQLModel:
+        result = await UnavailableFacilityGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Updates the unavailable Facility data""")
+    async def update(self, info: strawberryA.types.Info, data: UnavailableFacilityUpdateGQLModel) -> "UnavailableFacilityEditorGQLModel":
+        lastchange = data.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdateUnavailableFacility(session, id=self.id, data=data)
+            if lastchange == data.lastchange:
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = UnavailableFacilityEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+
+################################################################################################################
+
 #userPlan GQL
 from gql_plannedlessons.GraphResolvers import resolveUserPlanById
+from gql_plannedlessons.GraphResolvers import resolveUpdateUserPlan
 @strawberryA.federation.type(keys=["id"],description="""Intermediate User and Plan""")
 class UserPlanGQLModel:
     @classmethod
@@ -311,8 +560,63 @@ class UserPlanGQLModel:
         result = await resolveUserById(AsyncSessionFromInfo(info), self.user_id)
         return result
 
+    @strawberryA.field(description="""Returns the user-plan editor""")
+    async def editor(self, info: strawberryA.types.Info) -> Union['UserPlanEditorGQLModel', None]:
+        return self
+
+#User-Plan update GQL 
+@strawberryA.input
+class UserPlanUpdateGQLModel:
+    lastchange: datetime.datetime  # razitko
+    user_id: Optional[strawberryA.ID] = None
+
+#User-Plan Edit GQL   
+@strawberryA.federation.type( keys=["id"], description="""Entity representing an editable User-Plan""")
+class UserPlanEditorGQLModel:
+
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await UserPlanGQLModel.resolve_reference(info, id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def userPlan(self, info: strawberryA.types.Info) -> UserPlanGQLModel:
+        result = await UserPlanGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Updates the User-Plan data""")
+    async def update(self, info: strawberryA.types.Info, data: UserPlanUpdateGQLModel) -> "UserPlanEditorGQLModel":
+        lastchange = data.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdateUserPlan(session, id=self.id, data=data)
+            if lastchange == data.lastchange:
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = UserPlanEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+
+################################################################################################################
+
 #facilityPlan GQL
 from gql_plannedlessons.GraphResolvers import resolveFacilityPlanById
+from gql_plannedlessons.GraphResolvers import resolveUpdateFacilityPlan
 @strawberryA.federation.type(keys=["id"],description="""Intermediate Facility and Plan""")
 class FacilityPlanGQLModel:
     @classmethod
@@ -336,8 +640,63 @@ class FacilityPlanGQLModel:
         result = await resolveFacilityById(AsyncSessionFromInfo(info), self.facility_id)
         return result
 
+    @strawberryA.field(description="""Returns the facility-plan editor""")
+    async def editor(self, info: strawberryA.types.Info) -> Union['FacilityPlanEditorGQLModel', None]:
+        return self
+
+#Facility-Plan update GQL 
+@strawberryA.input
+class FacilityPlanUpdateGQLModel:
+    lastchange: datetime.datetime  # razitko
+    facility_id: Optional[strawberryA.ID] = None
+
+#Facility-Plan Edit GQL   
+@strawberryA.federation.type( keys=["id"], description="""Entity representing an editable Facility-Plan""")
+class FacilityPlanEditorGQLModel:
+
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await FacilityPlanGQLModel.resolve_reference(info, id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def facilityPlan(self, info: strawberryA.types.Info) -> FacilityPlanGQLModel:
+        result = await FacilityPlanGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Updates the Facility-Plan data""")
+    async def update(self, info: strawberryA.types.Info, data: FacilityPlanUpdateGQLModel) -> "FacilityPlanEditorGQLModel":
+        lastchange = data.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdateFacilityPlan(session, id=self.id, data=data)
+            if lastchange == data.lastchange:
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = FacilityPlanEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+
+################################################################################################################
+
 #groupPlan GQL
 from gql_plannedlessons.GraphResolvers import resolveGroupPlanById
+from gql_plannedlessons.GraphResolvers import resolveUpdateGroupPlan
 @strawberryA.federation.type(keys=["id"],description="""Intermediate Group and Plan""")
 class GroupPlanGQLModel:
     @classmethod
@@ -360,6 +719,58 @@ class GroupPlanGQLModel:
     async def group(self, info: strawberryA.types.Info) -> Union[GroupGQLModel,None]:
         result = await resolveGroupById(AsyncSessionFromInfo(info), self.group_id)
         return result
+
+    @strawberryA.field(description="""Returns the Group-plan editor""")
+    async def editor(self, info: strawberryA.types.Info) -> Union['GroupPlanEditorGQLModel', None]:
+        return self
+
+#Group-Plan update GQL 
+@strawberryA.input
+class GroupPlanUpdateGQLModel:
+    lastchange: datetime.datetime  # razitko
+    group_id: Optional[strawberryA.ID] = None
+
+#Group-Plan Edit GQL   
+@strawberryA.federation.type( keys=["id"], description="""Entity representing an editable Group-Plan""")
+class GroupPlanEditorGQLModel:
+
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await GroupPlanGQLModel.resolve_reference(info, id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def groupPlan(self, info: strawberryA.types.Info) -> GroupPlanGQLModel:
+        result = await GroupPlanGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Updates the Group-Plan data""")
+    async def update(self, info: strawberryA.types.Info, data: GroupPlanUpdateGQLModel) -> "GroupPlanEditorGQLModel":
+        lastchange = data.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdateGroupPlan(session, id=self.id, data=data)
+            if lastchange == data.lastchange:
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = GroupPlanEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
 
 
 ###########################################################################################################################
