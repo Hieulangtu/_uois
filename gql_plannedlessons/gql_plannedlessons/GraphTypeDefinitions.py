@@ -235,6 +235,7 @@ class PlannedLessonGQLModel:
 class PlannedLessonUpdateGQLModel:
     lastchange: datetime.datetime  # razitko
     event_id: Optional[strawberryA.ID] = None
+    name: Optional[str] = None
 
 
 #PlannedLesson Edit GQL   
@@ -298,9 +299,9 @@ class PlannedLessonEditorGQLModel:
             return result
     
     @strawberryA.field(description="""Create new unavailable plan """)
-    async def add_unavailable_plan(self, info: strawberryA.types.Info, startDate: datetime.date, endDate: datetime.date) -> 'UnavailablePlanGQLModel':
+    async def add_unavailable_plan(self, info: strawberryA.types.Info, startDate: datetime.datetime, endDate: datetime.datetime,reason:str) -> 'UnavailablePlanGQLModel':
         async with withInfo(info) as session:
-            result = await resolveInsertUnavailablePL(session, None, extraAttributes={ 'startDate': startDate, 'endDate':endDate, 'plannedlession_id': self.id})
+            result = await resolveInsertUnavailablePL(session, None, extraAttributes={ 'startDate': startDate, 'endDate':endDate, 'plannedlession_id': self.id, 'reason':reason})
             return result
 
 ################################################################################################################
@@ -340,6 +341,7 @@ class UnavailablePlanUpdateGQLModel:
     lastchange: datetime.datetime  # razitko
     startDate: Optional[datetime.datetime] = None
     endDate: Optional[datetime.datetime] = None
+    reason: Optional[str] = None
 
 
 #unavailable planned lesson GQL   
@@ -421,6 +423,7 @@ class UnavailableUserUpdateGQLModel:
     lastchange: datetime.datetime  # razitko
     startDate: Optional[datetime.datetime] = None
     endDate: Optional[datetime.datetime] = None
+    reason: Optional[str] = None
 
 
 #unavailable User Edit GQL   
@@ -502,6 +505,7 @@ class UnavailableFacilityUpdateGQLModel:
     lastchange: datetime.datetime  # razitko
     startDate: Optional[datetime.datetime] = None
     endDate: Optional[datetime.datetime] = None
+    reason: Optional[str] = None
 
 #unavailable Facility Edit GQL   
 @strawberryA.federation.type( keys=["id"], description="""Entity representing an editable unavailable Facility""")
@@ -561,7 +565,6 @@ class UserPlanGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-
 
     @strawberryA.field(description="""Planned Lesson""")
     async def plannedLesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
