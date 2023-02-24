@@ -87,7 +87,7 @@ class GroupPlanModel(BaseModel):
 
     id=UUIDColumn()
     group_id=Column(ForeignKey('groups.id'))
-    plannedlession_id=Column(ForeignKey('planned_lessons.id'))
+    plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class EventModel(BaseModel):
@@ -100,7 +100,7 @@ class EventModel(BaseModel):
 
 #     id = UUIDColumn()
 #     event_id=Column(ForeignKey('events.id'))
-#     plannedlession_id=Column(ForeignKey('planned_lessons.id'))
+#     plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
 
 class FacilityModel(BaseModel):
     __tablename__ = 'facilities'
@@ -112,7 +112,7 @@ class FacilityPlanModel(BaseModel):
 
     id=UUIDColumn()
     facility_id=Column(ForeignKey('facilities.id'))
-    plannedlession_id=Column(ForeignKey('planned_lessons.id'))
+    plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class UnavailableFacilityModel(BaseModel):

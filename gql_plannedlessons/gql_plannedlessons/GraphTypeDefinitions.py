@@ -283,25 +283,25 @@ class PlannedLessonEditorGQLModel:
     @strawberryA.field(description="""Create new group plan - create group for lesson """)
     async def add_group_plan(self, info: strawberryA.types.Info, group_id: uuid.UUID) -> 'GroupPlanGQLModel':
         async with withInfo(info) as session:
-            result = await resolveInsertGroupPlan(session, None, extraAttributes={ 'group_id': group_id, 'plannedlession_id': self.id})
+            result = await resolveInsertGroupPlan(session, None, extraAttributes={ 'group_id': group_id, 'plannedlesson_id': self.id})
             return result
     
     @strawberryA.field(description="""Create new user plan - create user for lesson """)
     async def add_user_plan(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserPlanGQLModel':
         async with withInfo(info) as session:
-            result = await resolveInsertUserPlan(session, None, extraAttributes={ 'user_id': user_id, 'plannedlession_id': self.id})
+            result = await resolveInsertUserPlan(session, None, extraAttributes={ 'user_id': user_id, 'plannedlesson_id': self.id})
             return result
 
     @strawberryA.field(description="""Create new facility plan - create facility for lesson """)
     async def add_facility_plan(self, info: strawberryA.types.Info, facility_id: uuid.UUID) -> 'FacilityPlanGQLModel':
         async with withInfo(info) as session:
-            result = await resolveInsertFacilityPlan(session, None, extraAttributes={ 'facility_id': facility_id, 'plannedlession_id': self.id})
+            result = await resolveInsertFacilityPlan(session, None, extraAttributes={ 'facility_id': facility_id, 'plannedlesson_id': self.id})
             return result
     
     @strawberryA.field(description="""Create new unavailable plan """)
     async def add_unavailable_plan(self, info: strawberryA.types.Info, startDate: datetime.datetime, endDate: datetime.datetime,reason:str) -> 'UnavailablePlanGQLModel':
         async with withInfo(info) as session:
-            result = await resolveInsertUnavailablePL(session, None, extraAttributes={ 'startDate': startDate, 'endDate':endDate, 'plannedlession_id': self.id, 'reason':reason})
+            result = await resolveInsertUnavailablePL(session, None, extraAttributes={ 'startDate': startDate, 'endDate':endDate, 'plannedlesson_id': self.id, 'reason':reason})
             return result
 
 ################################################################################################################
@@ -324,6 +324,14 @@ class UnavailablePlanGQLModel:
     @strawberryA.field(description=""" reason for unavailibility (like National's day or training course)""")
     def reason(self) -> str:
         return self.reason
+    
+    @strawberryA.field(description="""Start date""")
+    def startDate(self) -> datetime.datetime:
+        return self.startDate
+
+    @strawberryA.field(description="""End date""")
+    def endDate(self) -> datetime.datetime:
+        return self.endDate
 
     @strawberryA.field(description="""Plan that unavailable""")
     async def plannedLesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
@@ -407,6 +415,14 @@ class UnavailableUserGQLModel:
     @strawberryA.field(description=""" reason for unavailibility (like dovolenou)""")
     def reason(self) -> str:
         return self.reason
+    
+    @strawberryA.field(description="""Start date""")
+    def startDate(self) -> datetime.datetime:
+        return self.startDate
+
+    @strawberryA.field(description="""End date""")
+    def endDate(self) -> datetime.datetime:
+        return self.endDate
 
     @strawberryA.field(description="""Information User that unavailable""")
     async def user(self, info: strawberryA.types.Info) -> Union[UserGQLModel,None]:
@@ -485,6 +501,14 @@ class UnavailableFacilityGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""Start date""")
+    def startDate(self) -> datetime.datetime:
+        return self.startDate
+
+    @strawberryA.field(description="""End date""")
+    def endDate(self) -> datetime.datetime:
+        return self.endDate
     
     @strawberryA.field(description=""" reason for unavailibility (like under-reconstruction)""")
     def reason(self) -> str:
