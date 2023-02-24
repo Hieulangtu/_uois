@@ -177,6 +177,10 @@ class PlannedLessonGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""planned lesson's name (like Informatika or Matematika)""")
+    def name(self) -> str:
+        return self.name
 
     @strawberryA.field(description="""return user""")
     async def users(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
@@ -315,7 +319,10 @@ class UnavailablePlanGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-
+    
+    @strawberryA.field(description=""" reason for unavailibility (like National's day or training course)""")
+    def reason(self) -> str:
+        return self.reason
 
     @strawberryA.field(description="""Plan that unavailable""")
     async def plannedLesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel,None]:
@@ -394,7 +401,10 @@ class UnavailableUserGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-
+    
+    @strawberryA.field(description=""" reason for unavailibility (like dovolenou)""")
+    def reason(self) -> str:
+        return self.reason
 
     @strawberryA.field(description="""Information User that unavailable""")
     async def user(self, info: strawberryA.types.Info) -> Union[UserGQLModel,None]:
@@ -472,7 +482,10 @@ class UnavailableFacilityGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-
+    
+    @strawberryA.field(description=""" reason for unavailibility (like under-reconstruction)""")
+    def reason(self) -> str:
+        return self.reason
 
     @strawberryA.field(description="""Infor Facility that unavailable""")
     async def facility(self, info: strawberryA.types.Info) -> Union[FacilityGQLModel,None]:
@@ -906,7 +919,7 @@ class Query:
     #unavailable facility
     @strawberryA.field(description="""Finds an unavailable facility by id""")
     async def unavailable_facility_by_id(self,info: strawberryA.types.Info, id: uuid.UUID) -> Union[UnavailableFacilityGQLModel,None]:
-        result = await resolveUnavailableUserById(AsyncSessionFromInfo(info), id)
+        result = await resolveUnavailableFacilityById(AsyncSessionFromInfo(info), id)
         return result
     
     @strawberryA.field(description="""Finds all unavailable facilities""")

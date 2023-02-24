@@ -33,6 +33,7 @@ class PlannedLessonModel(BaseModel):
     __tablename__ = 'planned_lessons'
     
     id = UUIDColumn()
+    name = Column(String)
     event_id=Column(ForeignKey('events.id'))
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
   
@@ -42,6 +43,7 @@ class UnavailablePLModel(BaseModel):
     __tablename__ = 'unavailable_planned_lessons'
 
     id=UUIDColumn()
+    reason = Column(String)
     plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
@@ -69,6 +71,7 @@ class UnavailableUserModel(BaseModel):
     __tablename__ = 'unavailable_users'
 
     id=UUIDColumn()
+    reason = Column(String)
     user_id=Column(ForeignKey('users.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
@@ -116,6 +119,7 @@ class UnavailableFacilityModel(BaseModel):
     __tablename__ = 'unavailable_facilities'
 
     id=UUIDColumn()
+    reason = Column(String)
     facility_id=Column(ForeignKey('facilities.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
