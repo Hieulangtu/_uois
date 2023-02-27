@@ -208,7 +208,7 @@ class PlannedLessonGQLModel:
             return result
         
     @strawberryA.field(description="""return groups""")
-    async def groupss(self, info: strawberryA.types.Info)->typing.List['GroupGQLModel']:
+    async def groups(self, info: strawberryA.types.Info)->typing.List['GroupGQLModel']:
         async with withInfo(info) as session:
             result = await resolveGroupsForPlannedLesson_(session,  self.id)
             return result
@@ -976,7 +976,7 @@ class Query:
 #call method in DBfeed
 
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description=""" load data in dbfeeder to table """)
     async def load_demo_data(self,info: strawberryA.types.Info) -> str:
         asyncSessionMaker = info.context['asyncSessionMaker']
         result = await predefineAllDataStructures(asyncSessionMaker)
