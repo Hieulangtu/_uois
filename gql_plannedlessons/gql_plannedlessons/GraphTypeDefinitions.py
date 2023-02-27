@@ -369,7 +369,7 @@ class UnavailablePlanUpdateGQLModel:
     startDate: Optional[datetime.datetime] = None
     endDate: Optional[datetime.datetime] = None
     reason: Optional[str] = None
-
+    plannedlesson_id: Optional[strawberryA.ID] = None
 
 #unavailable planned lesson GQL   
 @strawberryA.federation.type( keys=["id"], description="""Entity representing an editable unavailable planned lesson""")
@@ -459,7 +459,7 @@ class UnavailableUserUpdateGQLModel:
     startDate: Optional[datetime.datetime] = None
     endDate: Optional[datetime.datetime] = None
     reason: Optional[str] = None
-
+    user_id: Optional[strawberryA.ID] = None
 
 #unavailable User Edit GQL   
 @strawberryA.federation.type( keys=["id"], description="""Entity representing an editable unavailable user""")
@@ -549,6 +549,7 @@ class UnavailableFacilityUpdateGQLModel:
     startDate: Optional[datetime.datetime] = None
     endDate: Optional[datetime.datetime] = None
     reason: Optional[str] = None
+    facility_id: Optional[strawberryA.ID] = None
 
 #unavailable Facility Edit GQL   
 @strawberryA.federation.type( keys=["id"], description="""Entity representing an editable unavailable Facility""")
@@ -628,6 +629,7 @@ class UserPlanGQLModel:
 class UserPlanUpdateGQLModel:
     lastchange: datetime.datetime  # razitko
     user_id: Optional[strawberryA.ID] = None
+    plannedlesson_id: Optional[strawberryA.ID] = None
 
 #User-Plan Edit GQL   
 @strawberryA.federation.type( keys=["id"], description="""Entity representing an editable User-Plan""")
@@ -708,6 +710,7 @@ class FacilityPlanGQLModel:
 class FacilityPlanUpdateGQLModel:
     lastchange: datetime.datetime  # razitko
     facility_id: Optional[strawberryA.ID] = None
+    plannedlesson_id: Optional[strawberryA.ID] = None
 
 #Facility-Plan Edit GQL   
 @strawberryA.federation.type( keys=["id"], description="""Entity representing an editable Facility-Plan""")
@@ -788,6 +791,7 @@ class GroupPlanGQLModel:
 class GroupPlanUpdateGQLModel:
     lastchange: datetime.datetime  # razitko
     group_id: Optional[strawberryA.ID] = None
+    plannedlesson_id: Optional[strawberryA.ID] = None
 
 #Group-Plan Edit GQL   
 @strawberryA.federation.type( keys=["id"], description="""Entity representing an editable Group-Plan""")
