@@ -4,6 +4,8 @@ from gql_plannedlessons.DBDefinitions import BaseModel,PlannedLessonModel
 from gql_plannedlessons.DBDefinitions import UserPlanModel, GroupPlanModel,FacilityPlanModel
 from gql_plannedlessons.DBDefinitions import UnavailablePLModel, UnavailableFacilityModel, UnavailableUserModel
 
+from gql_plannedlessons.DBDefinitions import UserModel, GroupModel, EventModel, FacilityModel
+
 import random
 import itertools
 import datetime
@@ -99,6 +101,37 @@ def determineFacilityPlans():
     return data
 
 @cache
+def determineUsers():
+    data = [
+        {'id': '2d9dc5ca-a4a2-11ed-b9df-0242ac120003'},
+        {'id': '2d9dc868-a4a2-11ed-b9df-0242ac120003'}
+    ]
+    return data
+
+@cache
+def determineGroups():
+    data = [
+        {'id': '2d9dcd22-a4a2-11ed-b9df-0242ac120003'},
+        {'id': '2d9dced0-a4a2-11ed-b9df-0242ac120003'}
+    ]
+    return data
+
+@cache
+def determineFacilities():
+    data = [
+        {'id': 'a7c0bc21-af4a-46fd-a26d-821b77af0b5c'},
+        {'id': 'd890386a-7e0e-4abe-817f-fc3e4145e67c'}
+    ]
+    return data
+
+@cache
+def determineEvents():
+    data = [
+        {'id': '73dda931-1629-4193-963a-c55397b0a706'}
+    ]
+    return data
+
+@cache
 def d():
     # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
     data = [
@@ -123,7 +156,12 @@ async def predefineAllDataStructures(asyncSessionMaker):
       putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailableFacilityModel, determineUnavailableFacilities),
       putPredefinedStructuresIntoTable(asyncSessionMaker, UserPlanModel, determineUserPlans),
       putPredefinedStructuresIntoTable(asyncSessionMaker, GroupPlanModel, determineGroupPlans),
-      putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityPlanModel, determineFacilityPlans)
+      putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityPlanModel, determineFacilityPlans),
+
+      putPredefinedStructuresIntoTable(asyncSessionMaker, UserModel, determineUsers),
+      putPredefinedStructuresIntoTable(asyncSessionMaker, GroupModel, determineGroups),
+      putPredefinedStructuresIntoTable(asyncSessionMaker, EventModel, determineEvents),
+      putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityModel, determineFacilities)
     )
     
     

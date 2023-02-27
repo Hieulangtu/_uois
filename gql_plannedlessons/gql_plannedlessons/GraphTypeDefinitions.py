@@ -165,6 +165,7 @@ from gql_plannedlessons.GraphResolvers import resolvePlannedLessonById, resolveP
 from gql_plannedlessons.GraphResolvers import resolveUnavailablePLsForPlannedLesson
 from gql_plannedlessons.GraphResolvers import resolveUpdatePlannedLesson
 from gql_plannedlessons.GraphResolvers import resolveInsertUserPlan, resolveInsertGroupPlan, resolveInsertFacilityPlan, resolveInsertUnavailablePL
+from gql_plannedlessons.GraphResolvers import resolveUsersForPlannedLesson_, resolveGroupsForPlannedLesson_, resolveFacilitiesForPlannedLesson_ 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
 class PlannedLessonGQLModel:
 
@@ -182,23 +183,41 @@ class PlannedLessonGQLModel:
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""return user""")
-    async def users(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
-        result = await resolveUserLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
-        result2 = [UserGQLModel(id=item.user_id) for item in result]
-        return result2
+    # @strawberryA.field(description="""return user""")
+    # async def users(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
+    #     result = await resolveUserLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
+    #     result2 = [UserGQLModel(id=item.user_id) for item in result]
+    #     return result2
 
-    @strawberryA.field(description="""""")
-    async def groups(self, info: strawberryA.types.Info) -> List["GroupGQLModel"]: 
-        result = await resolveGroupLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
-        result2 = [GroupGQLModel(id=item.group_id) for item in result]
-        return result2
+    # @strawberryA.field(description="""""")
+    # async def groups(self, info: strawberryA.types.Info) -> List["GroupGQLModel"]: 
+    #     result = await resolveGroupLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
+    #     result2 = [GroupGQLModel(id=item.group_id) for item in result]
+    #     return result2
 
-    @strawberryA.field(description="""""")
-    async def facilities(self, info: strawberryA.types.Info) -> List["FacilityGQLModel"]: 
-        result = await resolveFacilityLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
-        result2 = [FacilityGQLModel(id=item.facility_id) for item in result]
-        return result2
+    # @strawberryA.field(description="""""")
+    # async def facilities(self, info: strawberryA.types.Info) -> List["FacilityGQLModel"]: 
+    #     result = await resolveFacilityLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
+    #     result2 = [FacilityGQLModel(id=item.facility_id) for item in result]
+    #     return result2
+
+    @strawberryA.field(description="""return users""")
+    async def users(self, info: strawberryA.types.Info)->typing.List['UserGQLModel']:
+        async with withInfo(info) as session:
+            result = await resolveUsersForPlannedLesson_(session,  self.id)
+            return result
+        
+    @strawberryA.field(description="""return groups""")
+    async def groupss(self, info: strawberryA.types.Info)->typing.List['GroupGQLModel']:
+        async with withInfo(info) as session:
+            result = await resolveGroupsForPlannedLesson_(session,  self.id)
+            return result
+        
+    @strawberryA.field(description="""return facilities""")
+    async def facilities(self, info: strawberryA.types.Info)->typing.List['FacilityGQLModel']:
+        async with withInfo(info) as session:
+            result = await resolveFacilitiesForPlannedLesson_(session,  self.id)
+            return result
 
     @strawberryA.field(description="""""")
     async def event(self, info: strawberryA.types.Info)->Union[EventGQLModel,None]:

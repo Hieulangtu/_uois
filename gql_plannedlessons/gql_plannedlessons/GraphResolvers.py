@@ -44,12 +44,32 @@ resolveGroupLinksForPlannedLesson = create1NGetter(GroupPlanModel,foreignKeyName
 resolveFacilityLinksForPlannedLesson = create1NGetter(FacilityPlanModel,foreignKeyName='plannedlesson_id')
 
 resolveUnavailablePLsForPlannedLesson = create1NGetter(UnavailablePLModel,foreignKeyName='plannedlesson_id') 
+
+async def resolveUsersForPlannedLesson_(session, id):
+    statement = select(UserModel).join(UserPlanModel)
+    statement = statement.filter(UserPlanModel.plannedlesson_id == id)
+    response = await session.execute(statement)
+    result = response.scalars()
+    return result
+
+async def resolveGroupsForPlannedLesson_(session, id):
+    statement = select(GroupModel).join(GroupPlanModel)
+    statement = statement.filter(GroupPlanModel.plannedlesson_id == id)
+    response = await session.execute(statement)
+    result = response.scalars()
+    return result
+
+async def resolveFacilitiesForPlannedLesson_(session, id):
+    statement = select(FacilityModel).join(FacilityPlanModel)
+    statement = statement.filter(FacilityPlanModel.plannedlesson_id == id)
+    response = await session.execute(statement)
+    result = response.scalars()
+    return result
+
 # resolveUnavailablesForUser = create1NGetter(UnavailableUserModel,foreignKeyName='user_id') 
 # resolveUnavailablesForFacility = create1NGetter(UnavailableFacilityModel,foreignKeyName='facility_id') 
-
 # resolveUnavailableUsersForPlannedLesson = create1NGetter(UnavailableUserModel,foreignKeyName='plannedlesson_id') 
 # resolveUnavailableFacilitiesForPlannedLesson = create1NGetter(UnavailableFacilityModel,foreignKeyName='plannedlesson_id') 
-  
 
 #user resolver
 resolveUserById = createEntityByIdGetter(UserModel)
