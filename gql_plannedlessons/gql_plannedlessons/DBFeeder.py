@@ -33,15 +33,17 @@ def singleCall(asyncFunc):
 
 @cache
 def determinePlans():
+    """Defines planned lesons and keeps them in memory"""
     data = [
-        {'id': 'a6b68fca-7874-419f-8366-007d6348c365','name':'protokol OSPF2'},
-        {'id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','name':'noSQL system'},
-        {'id': '7ec909c7-8479-4381-af99-fcc254fdd0ec','name':'Integral'}
+        {'id': 'a6b68fca-7874-419f-8366-007d6348c365','name':'protokol OSPF2','event_id':'73dda931-1629-4193-963a-c55397b0a706'},
+        {'id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','name':'noSQL system','event_id':'73dda931-1629-4193-963a-c55397b0a706'},
+        {'id': '7ec909c7-8479-4381-af99-fcc254fdd0ec','name':'Integral','event_id':'73dda931-1629-4193-963a-c55397b0a706'}
     ]
     return data
 
 @cache
 def determineUnavailablePlans():
+    """Defines the unavailibilities of planned lesons and keeps them in memory"""
     data = [
         {'id': '3c4ea8df-ef85-411f-9b31-1466e24b783a','plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','reason':'Státní svátek', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
         {'id': 'aff5f481-8316-431d-a8ab-7964010855be','plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','reason':'sportovní den', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
@@ -54,49 +56,49 @@ def determineUnavailablePlans():
 @cache
 def determineUnavailableUsers():
     data = [
-        {'id': 'aef959ec-88b9-4d34-ac18-a204944d8fbd','reason':'na dovolené', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
-        {'id': '878a749a-0e56-4520-ad32-3a0df939a32a','reason':'osobní důvody', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
-        {'id': 'fec7906c-2941-4ffc-8bc2-9fc96d9cb971','reason':'osobní důvody', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
-        {'id': '1f29aee7-7131-417d-98ee-77db9aab7c34','reason':'osobní důvody', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
-        {'id': '2c375f31-7593-4cf3-b742-a1ccc5a7bb90','reason':'mít svatbu', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': 'aef959ec-88b9-4d34-ac18-a204944d8fbd','reason':'na dovolené','user_id':'2d9dc5ca-a4a2-11ed-b9df-0242ac120003', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': '878a749a-0e56-4520-ad32-3a0df939a32a','reason':'osobní důvody','user_id':'2d9dc868-a4a2-11ed-b9df-0242ac120003', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': 'fec7906c-2941-4ffc-8bc2-9fc96d9cb971','reason':'osobní důvody','user_id':'2d9dc5ca-a4a2-11ed-b9df-0242ac120003', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': '1f29aee7-7131-417d-98ee-77db9aab7c34','reason':'osobní důvody','user_id':'2d9dc5ca-a4a2-11ed-b9df-0242ac120003', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': '2c375f31-7593-4cf3-b742-a1ccc5a7bb90','reason':'mít svatbu','user_id':'2d9dc868-a4a2-11ed-b9df-0242ac120003', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
     ]
     return data
 
 @cache
 def determineUnavailableFacilities():
     data = [
-        {'id': '66d42be1-4c1f-4db0-94b0-8623dffe2e01','reason':'v rekonstrukci', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
-        {'id': '71bdc937-9aed-4f09-a6fa-b64ed95140ab','reason':'v rekonstrukci', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
-        {'id': 'ffeced99-598e-4701-8e65-1ee1b63d6ffd','reason':'v rekonstrukci', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
-        {'id': '306848ac-b50d-48cc-8b1f-7a992cd6546f','reason':'Prezidentská přijímací místnost', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
-        {'id': '57da7bcb-22d0-4e3a-b1e0-65951030a02f','reason':'nemá vody', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': '66d42be1-4c1f-4db0-94b0-8623dffe2e01','reason':'v rekonstrukci','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': '71bdc937-9aed-4f09-a6fa-b64ed95140ab','reason':'v rekonstrukci','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': 'ffeced99-598e-4701-8e65-1ee1b63d6ffd','reason':'v rekonstrukci','facility_id':'d890386a-7e0e-4abe-817f-fc3e4145e67c', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': '306848ac-b50d-48cc-8b1f-7a992cd6546f','reason':'Prezidentská přijímací místnost','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
+        {'id': '57da7bcb-22d0-4e3a-b1e0-65951030a02f','reason':'nemá vody','facility_id':'d890386a-7e0e-4abe-817f-fc3e4145e67c', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
     ]
     return data
 
 @cache
 def determineUserPlans():
     data = [
-        {'id': '270a95eb-6cee-4941-9f09-23b8f6667fa6', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365', "lastchange":datetime.datetime.now()},
-        {'id': '8f716bc8-21d0-4924-ab00-79ac67692d29', 'plannedlesson_id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb', "lastchange":datetime.datetime.now()},
-        {'id': '81bd5329-5777-45cd-b1d7-be66cffe91e1', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365', "lastchange":datetime.datetime.now()},
+        {'id': '270a95eb-6cee-4941-9f09-23b8f6667fa6', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','user_id':'2d9dc5ca-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
+        {'id': '8f716bc8-21d0-4924-ab00-79ac67692d29', 'plannedlesson_id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','user_id':'2d9dc5ca-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
+        {'id': '81bd5329-5777-45cd-b1d7-be66cffe91e1', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365', 'user_id':'2d9dc868-a4a2-11ed-b9df-0242ac120003',"lastchange":datetime.datetime.now()},
     ]
     return data
 
 @cache
 def determineGroupPlans():
     data = [
-        {'id': '5a732669-4e00-4393-b4cf-9f2da7b2b31c', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365', "lastchange":datetime.datetime.now()},
-        {'id': '264fbd79-4e61-46c3-98b0-5d0a9a8b44ec', 'plannedlesson_id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb', "lastchange":datetime.datetime.now()},
-        {'id': 'd9774e66-7d23-472c-9c80-cf0f22d72321', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365', "lastchange":datetime.datetime.now()},
+        {'id': '5a732669-4e00-4393-b4cf-9f2da7b2b31c', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','group_id':'2d9dcd22-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
+        {'id': '264fbd79-4e61-46c3-98b0-5d0a9a8b44ec', 'plannedlesson_id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','group_id':'2d9dcd22-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
+        {'id': 'd9774e66-7d23-472c-9c80-cf0f22d72321', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','group_id':'2d9dced0-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
     ]
     return data
 
 @cache
 def determineFacilityPlans():
     data = [
-        {'id': '20ebf579-cf87-4b58-a39f-a13dbccd52bb', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365', "lastchange":datetime.datetime.now()},
-        {'id': 'ab602e68-dbd5-4082-8840-c7ca7a22b1ce', 'plannedlesson_id': '7ec909c7-8479-4381-af99-fcc254fdd0ec', "lastchange":datetime.datetime.now()},
-        {'id': '1e5e526c-3f64-4d98-bb15-5b16c1f1bcd2', 'plannedlesson_id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb', "lastchange":datetime.datetime.now()},
+        {'id': '20ebf579-cf87-4b58-a39f-a13dbccd52bb', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', "lastchange":datetime.datetime.now()},
+        {'id': 'ab602e68-dbd5-4082-8840-c7ca7a22b1ce', 'plannedlesson_id': '7ec909c7-8479-4381-af99-fcc254fdd0ec','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', "lastchange":datetime.datetime.now()},
+        {'id': '1e5e526c-3f64-4d98-bb15-5b16c1f1bcd2', 'plannedlesson_id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','facility_id':'d890386a-7e0e-4abe-817f-fc3e4145e67c', "lastchange":datetime.datetime.now()},
     ]
     return data
 
@@ -151,17 +153,21 @@ async def predefineAllDataStructures(asyncSessionMaker):
     
     await asyncio.gather(
       putPredefinedStructuresIntoTable(asyncSessionMaker, PlannedLessonModel, determinePlans), # prvni
-      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailablePLModel, determineUnavailablePlans),  # druha ...
-      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailableUserModel, determineUnavailableUsers),
-      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailableFacilityModel, determineUnavailableFacilities),
-      putPredefinedStructuresIntoTable(asyncSessionMaker, UserPlanModel, determineUserPlans),
-      putPredefinedStructuresIntoTable(asyncSessionMaker, GroupPlanModel, determineGroupPlans),
-      putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityPlanModel, determineFacilityPlans),
 
       putPredefinedStructuresIntoTable(asyncSessionMaker, UserModel, determineUsers),
       putPredefinedStructuresIntoTable(asyncSessionMaker, GroupModel, determineGroups),
       putPredefinedStructuresIntoTable(asyncSessionMaker, EventModel, determineEvents),
-      putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityModel, determineFacilities)
+      putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityModel, determineFacilities),
+
+      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailablePLModel, determineUnavailablePlans),  # druha ...
+      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailableUserModel, determineUnavailableUsers),
+      putPredefinedStructuresIntoTable(asyncSessionMaker, UnavailableFacilityModel, determineUnavailableFacilities),
+
+      putPredefinedStructuresIntoTable(asyncSessionMaker, UserPlanModel, determineUserPlans),
+      putPredefinedStructuresIntoTable(asyncSessionMaker, GroupPlanModel, determineGroupPlans),
+      putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityPlanModel, determineFacilityPlans),
+
+      
     )
     
     

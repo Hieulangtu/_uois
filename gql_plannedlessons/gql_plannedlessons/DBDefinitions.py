@@ -34,7 +34,7 @@ class PlannedLessonModel(BaseModel):
     
     id = UUIDColumn()
     name = Column(String)
-    event_id=Column(ForeignKey('eventss.id'))
+    event_id=Column(ForeignKey('events.id'))
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
   
 class UnavailablePLModel(BaseModel):
@@ -54,7 +54,7 @@ class UserModel(BaseModel):
     """Defines user in the lession
     """
 
-    __tablename__ = 'userss'
+    __tablename__ = 'users'
 
     id = UUIDColumn()
     
@@ -63,7 +63,7 @@ class UserPlanModel(BaseModel):
     __tablename__ = 'users_plans'
 
     id=UUIDColumn()
-    user_id=Column(ForeignKey('userss.id'))
+    user_id=Column(ForeignKey('users.id'))
     plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
@@ -72,13 +72,13 @@ class UnavailableUserModel(BaseModel):
 
     id=UUIDColumn()
     reason = Column(String)
-    user_id=Column(ForeignKey('userss.id'))
+    user_id=Column(ForeignKey('users.id'))
     startDate=Column(DateTime)
     endDate=Column(DateTime)
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class GroupModel(BaseModel):
-    __tablename__ = 'groupss'
+    __tablename__ = 'groups'
 
     id=UUIDColumn()
 
@@ -86,12 +86,12 @@ class GroupPlanModel(BaseModel):
     __tablename__ = 'groups_plans'    
 
     id=UUIDColumn()
-    group_id=Column(ForeignKey('groupss.id'))
+    group_id=Column(ForeignKey('groups.id'))
     plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class EventModel(BaseModel):
-    __tablename__ = 'eventss'
+    __tablename__ = 'events'
 
     id=UUIDColumn()
 
