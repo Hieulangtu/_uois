@@ -5,8 +5,8 @@ import uuid
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 
+from sqlalchemy import delete
 from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
 from uoishelpers.resolvers import putSingleEntityToDb
 
@@ -65,6 +65,12 @@ async def resolveFacilitiesForPlannedLesson_(session, id):
     response = await session.execute(statement)
     result = response.scalars()
     return result
+
+async def resolveDeletePlannedLesson(session, id) :
+    statement = delete(PlannedLessonModel).where(PlannedLessonModel.id == id)
+    result = await session.execute(statement)
+    await session.commit()
+    return "ok"
 
 # resolveUnavailablesForUser = create1NGetter(UnavailableUserModel,foreignKeyName='user_id') 
 # resolveUnavailablesForFacility = create1NGetter(UnavailableFacilityModel,foreignKeyName='facility_id') 
@@ -134,17 +140,35 @@ resolveUserPlanAll = createEntityGetter(UserPlanModel)
 resolveUpdateUserPlan = createUpdateResolver(UserPlanModel)
 resolveInsertUserPlan = createInsertResolver(UserPlanModel)
 
+async def resolveDeleteUserPlan(session, id) :
+    statement = delete(UserPlanModel).where(UserPlanModel.id == id)
+    result = await session.execute(statement)
+    await session.commit()
+    return "ok"
+
 #groupPlan resolver
 resolveGroupPlanById = createEntityByIdGetter(GroupPlanModel)
 resolveGroupPlanAll = createEntityGetter(GroupPlanModel)
 resolveUpdateGroupPlan = createUpdateResolver(GroupPlanModel)
 resolveInsertGroupPlan = createInsertResolver(GroupPlanModel)
 
+async def resolveDeleteGroupPlan(session, id) :
+    statement = delete(GroupPlanModel).where(GroupPlanModel.id == id)
+    result = await session.execute(statement)
+    await session.commit()
+    return "ok"
+
 #facilityPlan resolver
 resolveFacilityPlanById = createEntityByIdGetter(FacilityPlanModel)
 resolveFacilityPlanAll = createEntityGetter(FacilityPlanModel)
 resolveUpdateFacilityPlan = createUpdateResolver(FacilityPlanModel)
 resolveInsertFacilityPlan = createInsertResolver(FacilityPlanModel)
+
+async def resolveDeleteFacilityPlan(session, id) :
+    statement = delete(FacilityPlanModel).where(FacilityPlanModel.id == id)
+    result = await session.execute(statement)
+    await session.commit()
+    return "ok"
 
 # Unavailable resolver
 
@@ -154,17 +178,35 @@ resolveUnavailablePLAll = createEntityGetter(UnavailablePLModel)
 resolveUpdateUnavailablePL = createUpdateResolver(UnavailablePLModel)
 resolveInsertUnavailablePL = createInsertResolver(UnavailablePLModel)
 
+async def resolveDeleteUnavailablePlannedlesson(session, id) :
+    statement = delete(UnavailablePLModel).where(UnavailablePLModel.id == id)
+    result = await session.execute(statement)
+    await session.commit()
+    return "ok"
+
 #unavailable User resolver
 resolveUnavailableUserById = createEntityByIdGetter(UnavailableUserModel)
 resolveUnavailableUserAll = createEntityGetter(UnavailableUserModel)
 resolveUpdateUnavailableUser = createUpdateResolver(UnavailableUserModel)
 resolveInsertUnavailableUser = createInsertResolver(UnavailableUserModel)
 
+async def resolveDeleteUnavailableUser(session, id) :
+    statement = delete(UnavailableUserModel).where(UnavailableUserModel.id == id)
+    result = await session.execute(statement)
+    await session.commit()
+    return "ok"
+
 #unavailable Facility resolver
 resolveUnavailableFacilityById = createEntityByIdGetter(UnavailableFacilityModel)
 resolveUnavailableFacilityAll = createEntityGetter(UnavailableFacilityModel)
 resolveUpdateUnavailableFacility = createUpdateResolver(UnavailableFacilityModel)
 resolveInsertUnavailableFacility = createInsertResolver(UnavailableFacilityModel)
+
+async def resolveDeleteUnavailableFacility(session, id) :
+    statement = delete(UnavailableFacilityModel).where(UnavailableFacilityModel.id == id)
+    result = await session.execute(statement)
+    await session.commit()
+    return "ok"
 
 
 

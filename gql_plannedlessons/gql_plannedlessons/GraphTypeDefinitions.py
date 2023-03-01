@@ -165,7 +165,7 @@ from gql_plannedlessons.GraphResolvers import resolvePlannedLessonById, resolveP
 from gql_plannedlessons.GraphResolvers import resolveUnavailablePLsForPlannedLesson
 from gql_plannedlessons.GraphResolvers import resolveUpdatePlannedLesson
 from gql_plannedlessons.GraphResolvers import resolveInsertUserPlan, resolveInsertGroupPlan, resolveInsertFacilityPlan, resolveInsertUnavailablePL
-from gql_plannedlessons.GraphResolvers import resolveUsersForPlannedLesson_, resolveGroupsForPlannedLesson_, resolveFacilitiesForPlannedLesson_ 
+from gql_plannedlessons.GraphResolvers import resolveUsersForPlannedLesson_, resolveGroupsForPlannedLesson_, resolveFacilitiesForPlannedLesson_ ,resolveDeletePlannedLesson
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a planned lesson for timetable creation""")
 class PlannedLessonGQLModel:
 
@@ -182,18 +182,6 @@ class PlannedLessonGQLModel:
     @strawberryA.field(description="""planned lesson's name (like Informatika or Matematika)""")
     def name(self) -> str:
         return self.name
-
-    # @strawberryA.field(description="""return user""")
-    # async def users(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
-    #     result = await resolveUserLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
-    #     result2 = [UserGQLModel(id=item.user_id) for item in result]
-    #     return result2
-
-    # @strawberryA.field(description="""""")
-    # async def groups(self, info: strawberryA.types.Info) -> List["GroupGQLModel"]: 
-    #     result = await resolveGroupLinksForPlannedLesson(AsyncSessionFromInfo(info),self.id)
-    #     result2 = [GroupGQLModel(id=item.group_id) for item in result]
-    #     return result2
 
     # @strawberryA.field(description="""""")
     # async def facilities(self, info: strawberryA.types.Info) -> List["FacilityGQLModel"]: 
@@ -322,12 +310,18 @@ class PlannedLessonEditorGQLModel:
         async with withInfo(info) as session:
             result = await resolveInsertUnavailablePL(session, None, extraAttributes={ 'startDate': startDate, 'endDate':endDate, 'plannedlesson_id': self.id, 'reason':reason})
             return result
+        
+    @strawberryA.field(description="""delete operation""")
+    async def delete(self, info: strawberryA.types.Info) -> str:
+        async with withInfo(info) as session:
+            result = await resolveDeletePlannedLesson(session, self.id)
+            return result
 
 ################################################################################################################
 
 #unavailablePlan GQL
 from gql_plannedlessons.GraphResolvers import resolveUnavailablePLById 
-from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailablePL
+from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailablePL, resolveDeleteUnavailablePlannedlesson
 @strawberryA.federation.type(keys=["id"],description="""Unavailable pLan""")
 class UnavailablePlanGQLModel:
     @classmethod
@@ -412,13 +406,19 @@ class UnavailablePlanEditorGQLModel:
             result.id = self.id
             result.result = resultMsg
             return result
+        
+    @strawberryA.field(description="""delete operation""")
+    async def delete(self, info: strawberryA.types.Info) -> str:
+        async with withInfo(info) as session:
+            result = await resolveDeleteUnavailablePlannedlesson(session, self.id)
+            return result
 
 ################################################################################################################
 
 #unavailableUser GQL
 from gql_plannedlessons.GraphResolvers import resolveUnavailableUserById 
 from gql_plannedlessons.GraphResolvers import resolveUserById 
-from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableUser
+from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableUser,resolveDeleteUnavailableUser
 @strawberryA.federation.type(keys=["id"],description="""Unavailable users""")
 class UnavailableUserGQLModel:
     @classmethod
@@ -502,13 +502,20 @@ class UnavailableUserEditorGQLModel:
             result.id = self.id
             result.result = resultMsg
             return result
+        
+    @strawberryA.field(description="""delete operation""")
+    async def delete(self, info: strawberryA.types.Info) -> str:
+        async with withInfo(info) as session:
+            result = await resolveDeleteUnavailableUser(session, self.id)
+            return result
+    
 
 ################################################################################################################
 
 #unavailableFacility GQL 
 from gql_plannedlessons.GraphResolvers import resolveUnavailableFacilityById 
 from gql_plannedlessons.GraphResolvers import resolveFacilityById
-from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableFacility
+from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableFacility,resolveDeleteUnavailableFacility
 @strawberryA.federation.type(keys=["id"],description="""Unavailable facilities""")
 class UnavailableFacilityGQLModel:
     @classmethod
@@ -592,12 +599,18 @@ class UnavailableFacilityEditorGQLModel:
             result.id = self.id
             result.result = resultMsg
             return result
+        
+    @strawberryA.field(description="""delete operation""")
+    async def delete(self, info: strawberryA.types.Info) -> str:
+        async with withInfo(info) as session:
+            result = await resolveDeleteUnavailableFacility(session, self.id)
+            return result
 
 ################################################################################################################
 
 #userPlan GQL
 from gql_plannedlessons.GraphResolvers import resolveUserPlanById
-from gql_plannedlessons.GraphResolvers import resolveUpdateUserPlan
+from gql_plannedlessons.GraphResolvers import resolveUpdateUserPlan,resolveDeleteUserPlan
 @strawberryA.federation.type(keys=["id"],description="""Intermediate User and Plan""")
 class UserPlanGQLModel:
     @classmethod
@@ -672,12 +685,18 @@ class UserPlanEditorGQLModel:
             result.id = self.id
             result.result = resultMsg
             return result
+        
+    @strawberryA.field(description="""delete operation""")
+    async def delete(self, info: strawberryA.types.Info) -> str:
+        async with withInfo(info) as session:
+            result = await resolveDeleteUserPlan(session, self.id)
+            return result
 
 ################################################################################################################
 
 #facilityPlan GQL
 from gql_plannedlessons.GraphResolvers import resolveFacilityPlanById
-from gql_plannedlessons.GraphResolvers import resolveUpdateFacilityPlan
+from gql_plannedlessons.GraphResolvers import resolveUpdateFacilityPlan, resolveDeleteFacilityPlan
 @strawberryA.federation.type(keys=["id"],description="""Intermediate Facility and Plan""")
 class FacilityPlanGQLModel:
     @classmethod
@@ -753,12 +772,18 @@ class FacilityPlanEditorGQLModel:
             result.id = self.id
             result.result = resultMsg
             return result
+    
+    @strawberryA.field(description="""delete operation""")
+    async def delete(self, info: strawberryA.types.Info) -> str:
+        async with withInfo(info) as session:
+            result = await resolveDeleteFacilityPlan(session, self.id)
+            return result
 
 ################################################################################################################
 
 #groupPlan GQL
 from gql_plannedlessons.GraphResolvers import resolveGroupPlanById
-from gql_plannedlessons.GraphResolvers import resolveUpdateGroupPlan
+from gql_plannedlessons.GraphResolvers import resolveUpdateGroupPlan, resolveDeleteGroupPlan
 @strawberryA.federation.type(keys=["id"],description="""Intermediate Group and Plan""")
 class GroupPlanGQLModel:
     @classmethod
@@ -833,6 +858,12 @@ class GroupPlanEditorGQLModel:
             result = GroupPlanEditorGQLModel()
             result.id = self.id
             result.result = resultMsg
+            return result
+        
+    @strawberryA.field(description="""delete operation""")
+    async def delete(self, info: strawberryA.types.Info) -> str:
+        async with withInfo(info) as session:
+            result = await resolveDeleteGroupPlan(session, self.id)
             return result
 
 

@@ -34,9 +34,9 @@ def singleCall(asyncFunc):
 @cache
 def determinePlans():
     data = [
-        {'id': 'a6b68fca-7874-419f-8366-007d6348c365','name':'matematika'},
-        {'id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','name':'informatika'},
-        {'id': '7ec909c7-8479-4381-af99-fcc254fdd0ec','name':'data analyza'}
+        {'id': 'a6b68fca-7874-419f-8366-007d6348c365','name':'protokol OSPF2'},
+        {'id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','name':'noSQL system'},
+        {'id': '7ec909c7-8479-4381-af99-fcc254fdd0ec','name':'Integral'}
     ]
     return data
 
