@@ -269,7 +269,7 @@ class PlannedLessonEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def plannedLesson(self, info: strawberryA.types.Info) -> PlannedLessonGQLModel:
-        result = await PlannedLessonGQLModel.resolve_reference(info, id)
+        result = await PlannedLessonGQLModel.resolve_reference(info, self.id)
         return result
 
     @strawberryA.field(description="""Updates the planned lesson data""")
@@ -365,7 +365,7 @@ class UnavailablePlanUpdateGQLModel:
     reason: Optional[str] = None
     plannedlesson_id: Optional[strawberryA.ID] = None
 
-#unavailable planned lesson GQL   
+#unavailable planned lesson edit GQL   
 @strawberryA.federation.type( keys=["id"], description="""Entity representing an editable unavailable planned lesson""")
 class UnavailablePlanEditorGQLModel:
 
@@ -389,7 +389,7 @@ class UnavailablePlanEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def unavailablePlan(self, info: strawberryA.types.Info) -> UnavailablePlanGQLModel:
-        result = await UnavailablePlanGQLModel.resolve_reference(info, id)
+        result = await UnavailablePlanGQLModel.resolve_reference(info, self.id)
         return result
 
     @strawberryA.field(description="""Updates the unavailable planned lesson data""")
@@ -418,7 +418,7 @@ class UnavailablePlanEditorGQLModel:
 #unavailableUser GQL
 from gql_plannedlessons.GraphResolvers import resolveUnavailableUserById 
 from gql_plannedlessons.GraphResolvers import resolveUserById 
-from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableUser,resolveDeleteUnavailableUser
+from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableUser,resolveDeleteUnavailableUser, resolveInsertUnavailableUser
 @strawberryA.federation.type(keys=["id"],description="""Unavailable users""")
 class UnavailableUserGQLModel:
     @classmethod
@@ -485,7 +485,7 @@ class UnavailableUserEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def unavailableUser(self, info: strawberryA.types.Info) -> UnavailableUserGQLModel:
-        result = await UnavailableUserGQLModel.resolve_reference(info, id)
+        result = await UnavailableUserGQLModel.resolve_reference(info, self.id)
         return result
 
     @strawberryA.field(description="""Updates the unavailable User data""")
@@ -508,6 +508,12 @@ class UnavailableUserEditorGQLModel:
         async with withInfo(info) as session:
             result = await resolveDeleteUnavailableUser(session, self.id)
             return result
+        
+    @strawberryA.field(description="""Create new unavailibility for user """)
+    async def add_unavailability_user(self, info: strawberryA.types.Info, user_id: uuid.UUID,reason:str,startDate:datetime.datetime,endDate: datetime.datetime) -> 'UnavailableUserGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveInsertUnavailableUser(session, None, extraAttributes={ 'user_id': user_id, 'startDate': startDate,'endDate':endDate,'reason':reason})
+            return result
     
 
 ################################################################################################################
@@ -515,7 +521,7 @@ class UnavailableUserEditorGQLModel:
 #unavailableFacility GQL 
 from gql_plannedlessons.GraphResolvers import resolveUnavailableFacilityById 
 from gql_plannedlessons.GraphResolvers import resolveFacilityById
-from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableFacility,resolveDeleteUnavailableFacility
+from gql_plannedlessons.GraphResolvers import resolveUpdateUnavailableFacility,resolveDeleteUnavailableFacility,resolveInsertUnavailableFacility
 @strawberryA.federation.type(keys=["id"],description="""Unavailable facilities""")
 class UnavailableFacilityGQLModel:
     @classmethod
@@ -582,7 +588,7 @@ class UnavailableFacilityEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def unavailableFacility(self, info: strawberryA.types.Info) -> UnavailableFacilityGQLModel:
-        result = await UnavailableFacilityGQLModel.resolve_reference(info, id)
+        result = await UnavailableFacilityGQLModel.resolve_reference(info, self.id)
         return result
 
     @strawberryA.field(description="""Updates the unavailable Facility data""")
@@ -604,6 +610,12 @@ class UnavailableFacilityEditorGQLModel:
     async def delete(self, info: strawberryA.types.Info) -> str:
         async with withInfo(info) as session:
             result = await resolveDeleteUnavailableFacility(session, self.id)
+            return result
+        
+    @strawberryA.field(description="""Create new unavailibility for facility """)
+    async def add_unavailability_facility(self, info: strawberryA.types.Info, facility_id: uuid.UUID,reason:str,startDate:datetime.datetime,endDate: datetime.datetime) -> 'UnavailableFacilityGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveInsertUnavailableFacility(session, None, extraAttributes={ 'facility_id': facility_id, 'startDate': startDate,'endDate':endDate,'reason':reason})
             return result
 
 ################################################################################################################
@@ -668,7 +680,7 @@ class UserPlanEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def userPlan(self, info: strawberryA.types.Info) -> UserPlanGQLModel:
-        result = await UserPlanGQLModel.resolve_reference(info, id)
+        result = await UserPlanGQLModel.resolve_reference(info, self.id)
         return result
 
     @strawberryA.field(description="""Updates the User-Plan data""")
@@ -755,7 +767,7 @@ class FacilityPlanEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def facilityPlan(self, info: strawberryA.types.Info) -> FacilityPlanGQLModel:
-        result = await FacilityPlanGQLModel.resolve_reference(info, id)
+        result = await FacilityPlanGQLModel.resolve_reference(info, self.id)
         return result
 
     @strawberryA.field(description="""Updates the Facility-Plan data""")
@@ -842,7 +854,7 @@ class GroupPlanEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def groupPlan(self, info: strawberryA.types.Info) -> GroupPlanGQLModel:
-        result = await GroupPlanGQLModel.resolve_reference(info, id)
+        result = await GroupPlanGQLModel.resolve_reference(info, self.id)
         return result
 
     @strawberryA.field(description="""Updates the Group-Plan data""")

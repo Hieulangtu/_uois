@@ -67,6 +67,15 @@ async def resolveFacilitiesForPlannedLesson_(session, id):
     return result
 
 async def resolveDeletePlannedLesson(session, id) :
+    """_summary_
+
+    Args:
+        session (_type_): _description_
+        id (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     statement = delete(PlannedLessonModel).where(PlannedLessonModel.id == id)
     result = await session.execute(statement)
     await session.commit()
