@@ -51,7 +51,7 @@ class UnavailablePLModel(BaseModel):
 
 
 class UserModel(BaseModel):
-    """Defines user in the lession
+    """Defines an user (teacher) who teaches the lesson
     """
 
     __tablename__ = 'users'
@@ -60,6 +60,9 @@ class UserModel(BaseModel):
     
 
 class UserPlanModel(BaseModel):
+    """Defines an intermediate function between users and lessons
+    """
+
     __tablename__ = 'users_plans'
 
     id=UUIDColumn()
@@ -68,6 +71,9 @@ class UserPlanModel(BaseModel):
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class UnavailableUserModel(BaseModel):
+    """Defines an user (teacher) who's not able to teach the lesson
+    """    
+
     __tablename__ = 'unavailable_users'
 
     id=UUIDColumn()
@@ -78,11 +84,17 @@ class UnavailableUserModel(BaseModel):
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class GroupModel(BaseModel):
+    """Defines a group (of students) who studies the lesson
+    """
+
     __tablename__ = 'groups'
 
     id=UUIDColumn()
 
 class GroupPlanModel(BaseModel):
+    """Defines an intermediate function between groups and lessons
+    """
+    
     __tablename__ = 'groups_plans'    
 
     id=UUIDColumn()
@@ -91,6 +103,9 @@ class GroupPlanModel(BaseModel):
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class EventModel(BaseModel):
+    """Defines an event (what we will study) in the lesson
+    """
+
     __tablename__ = 'events'
 
     id=UUIDColumn()
@@ -103,11 +118,17 @@ class EventModel(BaseModel):
 #     plannedlesson_id=Column(ForeignKey('planned_lessons.id'))
 
 class FacilityModel(BaseModel):
+    """Defines a place (rooms, floors) where to study the lesson
+    """
+
     __tablename__ = 'facilities'
 
     id=UUIDColumn()
 
 class FacilityPlanModel(BaseModel):
+    """Defines an intermediate function between fecilities and lessons
+    """
+
     __tablename__ = 'facilities_plans'
 
     id=UUIDColumn()
@@ -116,6 +137,9 @@ class FacilityPlanModel(BaseModel):
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
 class UnavailableFacilityModel(BaseModel):
+    """Defines a place (rooms, floors) where's not able to have the lesson
+    """
+
     __tablename__ = 'unavailable_facilities'
 
     id=UUIDColumn()
