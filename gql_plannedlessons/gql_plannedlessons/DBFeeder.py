@@ -43,7 +43,7 @@ def determinePlans():
 
 @cache
 def determineUnavailablePlans():
-    """Defines the unavailibilities of planned lesons and keeps them in memory"""
+    """Defines the unavailibilities of planned lessons and keeps them in memory"""
     data = [
         {'id': '3c4ea8df-ef85-411f-9b31-1466e24b783a','plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','reason':'Státní svátek', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
         {'id': 'aff5f481-8316-431d-a8ab-7964010855be','plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','reason':'sportovní den', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
@@ -55,6 +55,7 @@ def determineUnavailablePlans():
 
 @cache
 def determineUnavailableUsers():
+    """Defines the unavailibilities of users and keeps them in memory"""    
     data = [
         {'id': 'aef959ec-88b9-4d34-ac18-a204944d8fbd','reason':'na dovolené','user_id':'2d9dc5ca-a4a2-11ed-b9df-0242ac120003', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
         {'id': '878a749a-0e56-4520-ad32-3a0df939a32a','reason':'osobní důvody','user_id':'2d9dc868-a4a2-11ed-b9df-0242ac120003', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
@@ -66,6 +67,7 @@ def determineUnavailableUsers():
 
 @cache
 def determineUnavailableFacilities():
+    """Defines the unavailibilities of facilities and keeps them in memory"""    
     data = [
         {'id': '66d42be1-4c1f-4db0-94b0-8623dffe2e01','reason':'v rekonstrukci','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
         {'id': '71bdc937-9aed-4f09-a6fa-b64ed95140ab','reason':'v rekonstrukci','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', 'startDate': datetime.datetime.now(), 'endDate':datetime.datetime.today(), "lastchange":datetime.datetime.now()},
@@ -77,6 +79,7 @@ def determineUnavailableFacilities():
 
 @cache
 def determineUserPlans():
+    """Defines combinations of users and lessons and keeps them in memory"""    
     data = [
         {'id': '270a95eb-6cee-4941-9f09-23b8f6667fa6', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','user_id':'2d9dc5ca-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
         {'id': '8f716bc8-21d0-4924-ab00-79ac67692d29', 'plannedlesson_id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','user_id':'2d9dc5ca-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
@@ -86,6 +89,7 @@ def determineUserPlans():
 
 @cache
 def determineGroupPlans():
+    """Defines combinations of groups and lessons and keeps them in memory"""    
     data = [
         {'id': '5a732669-4e00-4393-b4cf-9f2da7b2b31c', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','group_id':'2d9dcd22-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
         {'id': '264fbd79-4e61-46c3-98b0-5d0a9a8b44ec', 'plannedlesson_id': 'cd45cbb8-de6d-4ea2-82ee-6294010b00cb','group_id':'2d9dcd22-a4a2-11ed-b9df-0242ac120003', "lastchange":datetime.datetime.now()},
@@ -95,6 +99,7 @@ def determineGroupPlans():
 
 @cache
 def determineFacilityPlans():
+    """Defines combinations of facilities and lessons and keeps them in memory"""    
     data = [
         {'id': '20ebf579-cf87-4b58-a39f-a13dbccd52bb', 'plannedlesson_id': 'a6b68fca-7874-419f-8366-007d6348c365','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', "lastchange":datetime.datetime.now()},
         {'id': 'ab602e68-dbd5-4082-8840-c7ca7a22b1ce', 'plannedlesson_id': '7ec909c7-8479-4381-af99-fcc254fdd0ec','facility_id':'a7c0bc21-af4a-46fd-a26d-821b77af0b5c', "lastchange":datetime.datetime.now()},
@@ -104,6 +109,7 @@ def determineFacilityPlans():
 
 @cache
 def determineUsers():
+    """Defines users and keeps them in memory"""    
     data = [
         {'id': '2d9dc5ca-a4a2-11ed-b9df-0242ac120003'},
         {'id': '2d9dc868-a4a2-11ed-b9df-0242ac120003'}
@@ -112,6 +118,7 @@ def determineUsers():
 
 @cache
 def determineGroups():
+    """Defines groups and keeps them in memory"""    
     data = [
         {'id': '2d9dcd22-a4a2-11ed-b9df-0242ac120003'},
         {'id': '2d9dced0-a4a2-11ed-b9df-0242ac120003'}
@@ -120,6 +127,7 @@ def determineGroups():
 
 @cache
 def determineFacilities():
+    """Defines facilities and keeps them in memory"""    
     data = [
         {'id': 'a7c0bc21-af4a-46fd-a26d-821b77af0b5c'},
         {'id': 'd890386a-7e0e-4abe-817f-fc3e4145e67c'}
@@ -128,6 +136,7 @@ def determineFacilities():
 
 @cache
 def determineEvents():
+    """Defines events and keeps them in memory"""    
     data = [
         {'id': '73dda931-1629-4193-963a-c55397b0a706'}
     ]
