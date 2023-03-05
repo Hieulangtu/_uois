@@ -48,7 +48,7 @@ class UserGQLModel:
     def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id) # jestlize rozsirujete, musi byt tento vyraz
     
-    @strawberryA.field(description="""PlannedLessons""")
+    @strawberryA.field(description="""Plans that has the same user(teacher)""")
     async def plans(self, info: strawberryA.types.Info)->typing.List['PlannedLessonGQLModel']:
         async with withInfo(info) as session:
             result = await resolvePlannedLessonsForUser_(session,  self.id)
@@ -58,12 +58,12 @@ class UserGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""Users(teachers) who's not able to teach""")
     async def unavailableUsers(self, info: strawberryA.types.Info)->typing.List['UnavailableUserGQLModel']:
         result = await resolveUnavailablesForUser(AsyncSessionFromInfo(info), self.id)
         return result
     
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""Combinations of users and planned lessons""")
     async def userPlans(self, info: strawberryA.types.Info)->typing.List['UserPlanGQLModel']:
         result = await resolverPlanLinksForUser(AsyncSessionFromInfo(info), self.id)
         return result
@@ -86,7 +86,7 @@ class GroupGQLModel:
     def resolve_reference(cls, id: strawberryA.ID):
         return GroupGQLModel(id=id)
 
-    @strawberryA.field(description="""PlannedLessons""")
+    @strawberryA.field(description="""Plans that has the same group(of students)""")
     async def plans(self, info: strawberryA.types.Info)->typing.List['PlannedLessonGQLModel']:
         async with withInfo(info) as session:
             result = await resolvePlannedLessonsForGroup_(session,  self.id)
@@ -96,7 +96,7 @@ class GroupGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""Combinations of groups and planned lessons""")
     async def groupPlans(self, info: strawberryA.types.Info)->typing.List['GroupPlanGQLModel']:
         result = await resolverPlanLinksForGroup(AsyncSessionFromInfo(info), self.id)
         return result
@@ -120,18 +120,18 @@ class FacilityGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""PlannedLessons""")
+    @strawberryA.field(description="""Plans that has the same facility(place, room, floor)""")
     async def plans(self, info: strawberryA.types.Info)->typing.List['PlannedLessonGQLModel']:
         async with withInfo(info) as session:
             result = await resolvePlannedLessonsForFacility_(session,  self.id)
             return result
     
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""Facilities(place,room,floor) which are not able to have the lessons""")
     async def unavailableFacilities(self, info: strawberryA.types.Info)->typing.List['UnavailableFacilityGQLModel']:
         result = await resolveUnavailablesForFacility(AsyncSessionFromInfo(info), self.id)
         return result
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""Combinations of facilities and planned lessons""")
     async def facilityPlans(self, info: strawberryA.types.Info)->typing.List['FacilityPlanGQLModel']:
         result = await resolverPlanLinksForFacility(AsyncSessionFromInfo(info), self.id)
         return result
