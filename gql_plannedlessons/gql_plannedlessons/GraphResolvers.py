@@ -46,6 +46,15 @@ resolveFacilityLinksForPlannedLesson = create1NGetter(FacilityPlanModel,foreignK
 resolveUnavailablePLsForPlannedLesson = create1NGetter(UnavailablePLModel,foreignKeyName='plannedlesson_id') 
 
 async def resolveUsersForPlannedLesson_(session, id):
+    """ return all users that teach in this planned lesson 
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        UserModel
+    """
     statement = select(UserModel).join(UserPlanModel)
     statement = statement.filter(UserPlanModel.plannedlesson_id == id)
     response = await session.execute(statement)
@@ -53,6 +62,15 @@ async def resolveUsersForPlannedLesson_(session, id):
     return result
 
 async def resolveGroupsForPlannedLesson_(session, id):
+    """ return all groups that study in this planned lesson 
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        GroupModel
+    """
     statement = select(GroupModel).join(GroupPlanModel)
     statement = statement.filter(GroupPlanModel.plannedlesson_id == id)
     response = await session.execute(statement)
@@ -60,6 +78,15 @@ async def resolveGroupsForPlannedLesson_(session, id):
     return result
 
 async def resolveFacilitiesForPlannedLesson_(session, id):
+    """ return all facilities that can be used in this planned lesson 
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        facilityModel
+    """
     statement = select(FacilityModel).join(FacilityPlanModel)
     statement = statement.filter(FacilityPlanModel.plannedlesson_id == id)
     response = await session.execute(statement)
@@ -67,24 +94,20 @@ async def resolveFacilitiesForPlannedLesson_(session, id):
     return result
 
 async def resolveDeletePlannedLesson(session, id) :
-    """_summary_
+    """ function for delete the current planned lesson row
 
     Args:
-        session (_type_): _description_
-        id (_type_): _description_
+        session : object that works with the database
+        id (UUID): identification number
 
     Returns:
-        _type_: _description_
+        str: "ok" to confirm delete succeed
     """
     statement = delete(PlannedLessonModel).where(PlannedLessonModel.id == id)
     result = await session.execute(statement)
     await session.commit()
     return "ok"
 
-# resolveUnavailablesForUser = create1NGetter(UnavailableUserModel,foreignKeyName='user_id') 
-# resolveUnavailablesForFacility = create1NGetter(UnavailableFacilityModel,foreignKeyName='facility_id') 
-# resolveUnavailableUsersForPlannedLesson = create1NGetter(UnavailableUserModel,foreignKeyName='plannedlesson_id') 
-# resolveUnavailableFacilitiesForPlannedLesson = create1NGetter(UnavailableFacilityModel,foreignKeyName='plannedlesson_id') 
 
 #user resolver
 resolveUserById = createEntityByIdGetter(UserModel)
@@ -95,6 +118,15 @@ resolveInsertUser = createInsertResolver(UserModel)
 resolverPlanLinksForUser = create1NGetter(UserPlanModel,foreignKeyName='user_id')
 
 async def resolvePlannedLessonsForUser_(session, id):
+    """ return all the lessons that a user can has
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        PlannedLessonModel
+    """
     statement = select(PlannedLessonModel).join(UserPlanModel)
     statement = statement.filter(UserPlanModel.user_id == id)
     
@@ -111,6 +143,15 @@ resolveGroupAll = createEntityGetter(GroupModel)
 resolverPlanLinksForGroup = create1NGetter(GroupPlanModel,foreignKeyName='group_id')
 
 async def resolvePlannedLessonsForGroup_(session, id):
+    """ return all the lessons that this group can has
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        PlannedLessonModel
+    """
     statement = select(PlannedLessonModel).join(GroupPlanModel)
     statement = statement.filter(GroupPlanModel.group_id == id)
     
@@ -126,6 +167,15 @@ resolveFacilityAll = createEntityGetter(FacilityModel)
 resolverPlanLinksForFacility = create1NGetter(FacilityPlanModel,foreignKeyName='facility_id')
 
 async def resolvePlannedLessonsForFacility_(session, id):
+    """ return all the lessons take place in this facility 
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        PlannedLessonModel
+    """
     statement = select(PlannedLessonModel).join(FacilityPlanModel)
     statement = statement.filter(FacilityPlanModel.facility_id == id)
     
@@ -150,6 +200,15 @@ resolveUpdateUserPlan = createUpdateResolver(UserPlanModel)
 resolveInsertUserPlan = createInsertResolver(UserPlanModel)
 
 async def resolveDeleteUserPlan(session, id) :
+    """ function for delete the current user-plan row
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        str: "ok" to confirm delete succeed
+    """
     statement = delete(UserPlanModel).where(UserPlanModel.id == id)
     result = await session.execute(statement)
     await session.commit()
@@ -162,6 +221,15 @@ resolveUpdateGroupPlan = createUpdateResolver(GroupPlanModel)
 resolveInsertGroupPlan = createInsertResolver(GroupPlanModel)
 
 async def resolveDeleteGroupPlan(session, id) :
+    """ function for delete the current group-plan row
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        str: "ok" to confirm delete succeed
+    """
     statement = delete(GroupPlanModel).where(GroupPlanModel.id == id)
     result = await session.execute(statement)
     await session.commit()
@@ -174,6 +242,15 @@ resolveUpdateFacilityPlan = createUpdateResolver(FacilityPlanModel)
 resolveInsertFacilityPlan = createInsertResolver(FacilityPlanModel)
 
 async def resolveDeleteFacilityPlan(session, id) :
+    """ function for delete the current facility-plan row
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        str: "ok" to confirm delete succeed
+    """
     statement = delete(FacilityPlanModel).where(FacilityPlanModel.id == id)
     result = await session.execute(statement)
     await session.commit()
@@ -188,6 +265,15 @@ resolveUpdateUnavailablePL = createUpdateResolver(UnavailablePLModel)
 resolveInsertUnavailablePL = createInsertResolver(UnavailablePLModel)
 
 async def resolveDeleteUnavailablePlannedlesson(session, id) :
+    """ function for delete the current unavailable planned lesson row
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        str: "ok" to confirm delete succeed
+    """
     statement = delete(UnavailablePLModel).where(UnavailablePLModel.id == id)
     result = await session.execute(statement)
     await session.commit()
@@ -200,6 +286,15 @@ resolveUpdateUnavailableUser = createUpdateResolver(UnavailableUserModel)
 resolveInsertUnavailableUser = createInsertResolver(UnavailableUserModel)
 
 async def resolveDeleteUnavailableUser(session, id) :
+    """ function for delete the current unavailable user row
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        str: "ok" to confirm delete succeed
+    """
     statement = delete(UnavailableUserModel).where(UnavailableUserModel.id == id)
     result = await session.execute(statement)
     await session.commit()
@@ -212,6 +307,15 @@ resolveUpdateUnavailableFacility = createUpdateResolver(UnavailableFacilityModel
 resolveInsertUnavailableFacility = createInsertResolver(UnavailableFacilityModel)
 
 async def resolveDeleteUnavailableFacility(session, id) :
+    """ function for delete the current unavailable facility row
+
+    Args:
+        session : object that works with the database
+        id (UUID): identification number
+
+    Returns:
+        str: "ok" to confirm delete succeed
+    """
     statement = delete(UnavailableFacilityModel).where(UnavailableFacilityModel.id == id)
     result = await session.execute(statement)
     await session.commit()
